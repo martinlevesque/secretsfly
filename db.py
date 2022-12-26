@@ -3,8 +3,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 project_root = os.path.dirname(os.path.realpath(__file__))
-DB_URL = f"sqlite:////{project_root}/db/self-secrets-manager-current.db"
+
+db_env = 'current'
+
+if os.environ.get('ENV'):
+    db_env = os.environ.get('ENV')
+
+DB_URL = f"sqlite:////{project_root}/db/self-secrets-manager-{db_env}.db"
 
 engine = create_engine(DB_URL)
 Session = sessionmaker(bind=engine)
-

@@ -2,6 +2,9 @@ from flask import Blueprint
 from db import Session
 from models import Project
 
+STATUS_UP = 'up'
+STATUS_DOWN = 'down'
+
 bp = Blueprint('api', __name__, url_prefix='/api/status/')
 
 def sql_db_status():
@@ -11,13 +14,17 @@ def sql_db_status():
     except Exception as e:
         # todo replace by logger
         print(f"Exception: {e}")
-        return 'down'
+        return STATUS_DOWN
 
-    return 'up'
+    return STATUS_UP
 
 @bp.route('/')
 def index():
 
-    return {
+    result = {
         'db': sql_db_status(),
     }
+
+    status_code = 200 if list(set(list(result.values()))) == [STATUS_UP] else 500
+
+    return result, status_code

@@ -1,3 +1,5 @@
 .idea/
 
 __pycache__/
+
+db/self-secrets-manager-dev.db
