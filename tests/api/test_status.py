@@ -2,7 +2,7 @@
 import pytest
 
 from app import app
-from db import DB_URL
+
 
 @pytest.fixture
 def client():

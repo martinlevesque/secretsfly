@@ -1,0 +1,25 @@
+{% extends 'admin/layout.html' %}
+
+{% block body %}
+
+    <h1>Projects ({{ nb_projects }})</h1>
+
+    <table class="pure-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projects %}
+
+                <tr>
+                    <td>{{ project.id }}</td>
+                    <td>{{ project.name }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

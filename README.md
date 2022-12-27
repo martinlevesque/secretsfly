@@ -12,20 +12,20 @@ subprocess.call('env > out.txt', shell=True)
 
 ## todo
 
-### 0. test status API
+### [DONE] 0. test status API
 
-### 1. UI ability to create a project
+### UI ability to list projects
 
-### 2. UI ability to list projects
+### UI ability to create a project
 
-### 3. UI ability to generate a master key for a root project
+### UI ability to generate a master key for a root project
 
-### 4. UI ability to generate a service token for a project: read/write
+### UI ability to generate a service token for a project: read/write
 
-### 5. UI create a new secret on a project
+### UI create a new secret on a project
 
-### 6. UI delete a secret on a project
+### UI delete a secret on a project
 
-### 7. API list secrets using a service token+master key
+### API list secrets using a service token+master key
 
 

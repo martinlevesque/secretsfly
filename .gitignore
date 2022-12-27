@@ -3,3 +3,4 @@
 __pycache__/
 
 db/self-secrets-manager-dev.db
+db/self-secrets-manager-test.db
