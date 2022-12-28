@@ -14,9 +14,9 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] 0. test status API
 
-### UI ability to list projects
+### [DONE] UI ability to list projects
 
-### UI ability to create a project
+### [DONE] UI ability to create a project
 
 ### UI ability to generate a master key for a root project
 
