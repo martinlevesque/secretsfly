@@ -2,3 +2,4 @@ Flask==2.2.2
 SQLAlchemy==1.4.45
 alembic==1.9.1
 pytest==7.2.0
+pycryptodome==3.16.0

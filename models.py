@@ -9,3 +9,6 @@ class Project(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     description = Column(String)
+
+    def encrypt_aes_string(self, string):
+        return string
