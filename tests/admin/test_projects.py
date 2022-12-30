@@ -20,3 +20,4 @@ def test_admin_create_project_endpoint(client):
     util.assert_response_contains_html('Projects (1)', response)
     util.assert_response_contains_html(f"<td>{project.id}</td>", response)
     util.assert_response_contains_html(f"<td>{project.name}</td>", response)
+    util.assert_response_contains_html('New master key generated', response)

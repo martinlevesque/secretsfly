@@ -8,6 +8,19 @@
         <a class="pure-button" href="/admin/projects/new">+</a>
     </div>
 
+    {% if new_master_key %}
+        <div>
+            <p><strong>New master key generated for project {{ project.name }}. Make sure to back it up and keep it secret.</strong>
+                <input id="master_key_input"
+                       type="password"
+                       value="{{ new_master_key }}"
+                       class="pure-input-1-2"
+                       readonly />
+                <button onclick="copyTagContent('master_key_input')" class="pure-button">Copy master key</button>
+            </p>
+        </div>
+    {% endif %}
+
     <table class="pure-table">
         <thead>
             <tr>

@@ -18,7 +18,7 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] UI ability to create a project
 
-### UI ability to generate a master key for a root project
+### [DONE] UI ability to generate a master key for a root project
 
 ### UI ability to generate a service token for a project: read/write
 
