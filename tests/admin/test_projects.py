@@ -1,5 +1,5 @@
 from tests import util
-from db import Session
+from db import session
 from models import Project
 
 def test_admin_projects_endpoint(client):
@@ -13,7 +13,7 @@ def test_admin_projects_endpoint(client):
 def test_admin_create_project_endpoint(client):
     response = client.post('/admin/projects/', data={'name': 'Test Project 2'})
 
-    project = Session().query(Project).order_by(Project.id.desc()).first()
+    project = session.query(Project).order_by(Project.id.desc()).first()
 
     assert response.status_code == 200
 

@@ -1,5 +1,5 @@
 from flask import Blueprint
-from db import Session
+from db import session
 from models import Project
 
 STATUS_UP = 'up'
@@ -9,7 +9,6 @@ bp = Blueprint('api', __name__, url_prefix='/api/status/')
 
 def sql_db_status():
     try:
-        session = Session()
         session.query(Project).count()
     except Exception as e:
         # todo replace by logger

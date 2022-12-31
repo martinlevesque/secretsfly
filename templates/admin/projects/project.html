@@ -1,0 +1,28 @@
+{% extends 'admin/layout.html' %}
+
+{% block body %}
+
+    <h1>{{ project.name }} Project</h1>
+
+    {% if not project_master_key_is_set %}
+        <p>Project master key is not currently set, fill it below to keep it stored in the session.</p>
+
+        <form method="POST" class="pure-form pure-form-aligned" action="/admin/projects/{{ project.id }}/set-master-key">
+        <fieldset>
+            <div class="pure-control-group">
+                <label for="project-master-key">Project master key *</label>
+                <input type="password"
+                       name="master_key_{{ project.id }}"
+                       class="pure-input-1-2"
+                       id="project-master-key"
+                       placeholder="Project master key" />
+            </div>
+
+            <div class="pure-controls">
+                <button type="submit" class="pure-button pure-button-primary">Store in session</button>
+            </div>
+        </fieldset>
+    </form>
+    {% endif %}
+
+{% endblock %}

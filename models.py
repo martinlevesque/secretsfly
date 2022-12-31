@@ -1,14 +1,15 @@
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from lib import encryption
 
 Base = declarative_base()
 
+
 class Project(Base):
     __tablename__ = 'projects'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
     description = Column(String)
 
     def is_root_project(self):
@@ -20,3 +21,16 @@ class Project(Base):
         if self.is_root_project():
             # new master key only for root projects
             return encryption.generate_key_b64()
+
+
+SERVICE_RIGHT_READ = 'read'
+SERVICE_RIGHT_WRITE = 'write'
+
+class ServiceToken(Base):
+    __tablename__ = 'service_tokens'
+
+    id = Column(Integer, primary_key=True)
+    project_id = Column(Integer, ForeignKey(Project.id), nullable=False)
+    friendly_name = Column(String)
+    token = Column(String, nullable=False)  # sha-256 hash of the service token
+    rights = Column(String, nullable=False, default=SERVICE_RIGHT_READ)  # comma-separated list of rights: read,write

@@ -20,6 +20,8 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] UI ability to generate a master key for a root project
 
+### [DONE] UI store master key in session
+
 ### UI ability to generate a service token for a project: read/write
 
 ### UI create a new secret on a project
