@@ -22,6 +22,8 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] UI store master key in session
 
+### UI set time to live of session to ~1 hour
+
 ### UI ability to generate a service token for a project: read/write
 
 ### UI create a new secret on a project
