@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from lib import encryption
 
@@ -21,6 +21,13 @@ class Project(Base):
         if self.is_root_project():
             # new master key only for root projects
             return encryption.generate_key_b64()
+
+
+class Environment(Base):
+    __tablename__ = 'environments'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, unique=True, nullable=False)
 
 
 SERVICE_RIGHT_READ = 'read'

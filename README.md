@@ -1,4 +1,10 @@
 
+## Environment variables
+
+- `AVAILABLE_ENVIRONMENTS`: Default: prod. Comma separated list of environments available globally.
+
+##
+
 https://keystone.sh/docs/guides/use-secrets-in-your-project/
 
 https://www.doppler.com/
@@ -21,6 +27,10 @@ subprocess.call('env > out.txt', shell=True)
 ### [DONE] UI ability to generate a master key for a root project
 
 ### [DONE] UI store master key in session
+
+### [DONE] have default environments global created on startup
+
+### use a proper logger with log levels
 
 ### UI set time to live of session to ~1 hour
 
