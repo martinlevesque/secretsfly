@@ -30,7 +30,7 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] have default environments global created on startup
 
-### use a proper logger with log levels
+### [DONE] use a proper logger with log levels
 
 ### UI set time to live of session to ~1 hour
 

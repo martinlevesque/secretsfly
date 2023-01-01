@@ -6,7 +6,22 @@ from lib import encryption
 from models import Environment
 from db import session
 
+app = Flask(__name__)
+
+app.debug = True
+
+# app secret key is randomized at startup
+app.secret_key = encryption.generate_key_b64()
+
+# API
+app.register_blueprint(status_endpoints)
+
+# Admin
+app.register_blueprint(projects_endpoints)
+
 # Initialize global environments
+
+app.logger.debug('Initializing global environments')
 
 AVAILABLE_ENVIRONMENTS = os.environ.get('AVAILABLE_ENVIRONMENTS', 'prod').split(',')
 
@@ -21,18 +36,6 @@ for env in AVAILABLE_ENVIRONMENTS:
         session.commit()
 
 # end of global environments
-
-app = Flask(__name__)
-
-# app secret key is randomized at startup
-app.secret_key = encryption.generate_key_b64()
-
-# API
-app.register_blueprint(status_endpoints)
-
-# Admin
-app.register_blueprint(projects_endpoints)
-
 
 @app.teardown_request
 def remove_session(ex=None):

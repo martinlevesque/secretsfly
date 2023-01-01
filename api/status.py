@@ -1,6 +1,7 @@
 from flask import Blueprint
 from db import session
 from models import Project
+from lib.logging import logger
 
 STATUS_UP = 'up'
 STATUS_DOWN = 'down'
@@ -12,7 +13,7 @@ def sql_db_status():
         session.query(Project).count()
     except Exception as e:
         # todo replace by logger
-        print(f"Exception: {e}")
+        logger.error(f"SQL DB status error: {e}")
         return STATUS_DOWN
 
     return STATUS_UP

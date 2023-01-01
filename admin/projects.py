@@ -5,7 +5,6 @@ from models import Project
 
 bp = Blueprint('admin_projects', __name__, url_prefix='/admin/projects/')
 
-
 @bp.route('/', methods=['GET', 'POST'])
 def index():
     new_master_key = None
