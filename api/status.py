@@ -8,6 +8,7 @@ STATUS_DOWN = 'down'
 
 bp = Blueprint('api', __name__, url_prefix='/api/status/')
 
+
 def sql_db_status():
     try:
         session.query(Project).count()

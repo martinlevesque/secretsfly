@@ -1,9 +1,10 @@
+import time
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask import session as http_session
 from db import session
 from models import Project
 
-bp = Blueprint('admin_projects', __name__, url_prefix='/admin/projects/')
+bp = Blueprint('admin_projects', __name__, url_prefix='/projects/')
 
 @bp.route('/', methods=['GET', 'POST'])
 def index():
@@ -40,9 +41,13 @@ def get_project(project_id):
 def set_project_master_key(project_id):
     project = session.query(Project).filter_by(id=project_id).first()
 
-    http_session[f"project_master_key_{project.id}"] = request.form[f"master_key_{project.id}"]
+    http_session['projects_master_keys'] = http_session.get('projects_master_keys', {})
+    http_session['projects_master_keys'][str(project.id)] = {
+        'key': request.form[f"master_key_{project.id}"],
+        'set_at': int(time.time())
+    }
 
-    return redirect(url_for('admin_projects.get_project', project_id=project_id))
+    return redirect(url_for('admin.admin_projects.get_project', project_id=project_id))
 
 
 @bp.route('/new')
@@ -51,4 +56,5 @@ def new():
 
 
 def master_key_session_set(project):
-    return http_session.get(f"project_master_key_{project.id}") is not None
+    if http_session.get('projects_master_keys') and http_session['projects_master_keys'].get(str(project.id)):
+        return http_session['projects_master_keys'][str(project.id)]

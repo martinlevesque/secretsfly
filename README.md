@@ -34,7 +34,7 @@ subprocess.call('env > out.txt', shell=True)
 
 ### UI set time to live of session to ~1 hour
 
-### UI ability to generate a service token for a project: read/write
+### UI ability to generate a service token for a project+environment: read/write
 
 ### UI create a new secret on a project
 

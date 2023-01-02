@@ -1,7 +1,7 @@
 import os
 from flask import Flask
 from api.status import bp as status_endpoints
-from admin.projects import bp as projects_endpoints
+from admin.admin import bp as admin_endpoints
 from lib import encryption
 from models import Environment
 from db import session
@@ -17,7 +17,7 @@ app.secret_key = encryption.generate_key_b64()
 app.register_blueprint(status_endpoints)
 
 # Admin
-app.register_blueprint(projects_endpoints)
+app.register_blueprint(admin_endpoints)
 
 # Initialize global environments
 
