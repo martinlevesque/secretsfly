@@ -24,7 +24,7 @@ def check_expired_stored_master_keys():
 
         time_diff = int(time.time()) - master_key['set_at']
 
-        threshold_master_key_expiration = int(os.environ.get('ADMIN_MASTER_KEY_EXPIRATION', 6))
+        threshold_master_key_expiration = int(os.environ.get('ADMIN_MASTER_KEY_EXPIRATION', 300))
 
         if time_diff > threshold_master_key_expiration:
             logger.debug(f"Removing expired master key for project {project_id}")

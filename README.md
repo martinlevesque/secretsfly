@@ -2,6 +2,7 @@
 ## Environment variables
 
 - `AVAILABLE_ENVIRONMENTS`: Default: prod. Comma separated list of environments available globally.
+- `ADMIN_MASTER_KEY_EXPIRATION`: Default: 300 (in seconds). Master key timeout, after which the master key is deleted from the session.
 
 ##
 
@@ -32,7 +33,7 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] use a proper logger with log levels
 
-### UI set time to live of session to ~1 hour
+### [DONE] UI set time to live of session to ~1 hour
 
 ### UI ability to generate a service token for a project+environment: read/write
 
