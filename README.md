@@ -41,6 +41,6 @@ subprocess.call('env > out.txt', shell=True)
 
 ### UI delete a secret on a project
 
-### API list secrets using a service token+master key
+### API `list secrets using a service tok`en+master key
 
 

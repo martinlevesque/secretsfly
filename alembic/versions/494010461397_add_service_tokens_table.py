@@ -1,8 +1,8 @@
-"""Add ServiceToken model
+"""Add service tokens table
 
-Revision ID: f64a9ca60b41
-Revises: bbef4b28de4b
-Create Date: 2022-12-31 10:53:43.677702
+Revision ID: 494010461397
+Revises: 74ede0b4bd94
+Create Date: 2023-01-02 20:51:39.178892
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f64a9ca60b41'
-down_revision = 'bbef4b28de4b'
+revision = '494010461397'
+down_revision = '74ede0b4bd94'
 branch_labels = None
 depends_on = None
 
@@ -21,9 +21,11 @@ def upgrade() -> None:
     op.create_table('service_tokens',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('project_id', sa.Integer(), nullable=False),
+    sa.Column('environment_id', sa.Integer(), nullable=False),
     sa.Column('friendly_name', sa.String(), nullable=True),
     sa.Column('token', sa.String(), nullable=False),
     sa.Column('rights', sa.String(), nullable=False),
+    sa.ForeignKeyConstraint(['environment_id'], ['environments.id'], ),
     sa.ForeignKeyConstraint(['project_id'], ['projects.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

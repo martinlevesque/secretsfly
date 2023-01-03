@@ -4,7 +4,7 @@ import time
 from flask import Blueprint, request
 from flask import session as http_session
 from admin.projects import bp as projects_endpoints
-from lib.logging import logger
+from lib.log import logger
 
 
 bp = Blueprint('admin', __name__, url_prefix='/admin/')

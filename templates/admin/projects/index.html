@@ -26,6 +26,7 @@
             <tr>
                 <th>#</th>
                 <th>Name</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -34,6 +35,12 @@
                 <tr>
                     <td>{{ project.id }}</td>
                     <td>{{ project.name }}</td>
+                    <td>
+                        <ul>
+                            <li><a href="/admin/projects/{{ project.id }}/">View</a></li>
+                            <li><a href="/admin/projects/{{ project.id }}/service-tokens">Service Tokens</a></li>
+                        </ul>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

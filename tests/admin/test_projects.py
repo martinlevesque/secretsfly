@@ -46,5 +46,5 @@ def test_admin_set_project_master_key_endpoint(client, monkeypatch):
     util.assert_response_does_not_contain_html("Project master key is not currently set", response)
 
     with freeze_time(datetime.fromtimestamp(current_t + test_wait_duration + 1)):
-        response = client.get(f"/admin/projects/{new_project.id}")
+        response = client.get(f"/admin/projects/{new_project.id}/")
         util.assert_response_contains_html("Project master key is not currently set", response)

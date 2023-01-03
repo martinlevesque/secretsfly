@@ -3,8 +3,11 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from flask import session as http_session
 from db import session
 from models import Project
+from admin.service_tokens import bp as service_tokens_endpoints
 
 bp = Blueprint('admin_projects', __name__, url_prefix='/projects/')
+
+bp.register_blueprint(service_tokens_endpoints)
 
 @bp.route('/', methods=['GET', 'POST'])
 def index():
@@ -28,7 +31,7 @@ def index():
                            nb_projects=len(projects))
 
 
-@bp.route('/<project_id>', methods=['GET'])
+@bp.route('/<project_id>/', methods=['GET'])
 def get_project(project_id):
     project = session.query(Project).filter_by(id=project_id).first()
 
