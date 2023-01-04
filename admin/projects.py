@@ -1,6 +1,7 @@
 import time
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask import session as http_session
+from admin.session_util import master_key_session_set
 from db import session
 from models import Project
 from admin.service_tokens import bp as service_tokens_endpoints
@@ -8,6 +9,7 @@ from admin.service_tokens import bp as service_tokens_endpoints
 bp = Blueprint('admin_projects', __name__, url_prefix='/projects/')
 
 bp.register_blueprint(service_tokens_endpoints)
+
 
 @bp.route('/', methods=['GET', 'POST'])
 def index():
@@ -57,7 +59,3 @@ def set_project_master_key(project_id):
 def new():
     return render_template('admin/projects/new.html')
 
-
-def master_key_session_set(project):
-    if http_session.get('projects_master_keys') and http_session['projects_master_keys'].get(str(project.id)):
-        return http_session['projects_master_keys'][str(project.id)]

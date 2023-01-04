@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from lib import encryption
+from base64 import b64encode
 
 Base = declarative_base()
 
@@ -42,3 +43,14 @@ class ServiceToken(Base):
     friendly_name = Column(String)
     token = Column(String, nullable=False)  # sha-256 hash of the service token
     rights = Column(String, nullable=False, default=SERVICE_RIGHT_READ)  # comma-separated list of rights: read,write
+
+    def stringify_list_rights(input_rights):
+        return ','.join(input_rights)
+
+    def public_service_token(self, project_master_key):
+        input_service_token = bytes(f"{project_master_key}:{self.generated_token}", 'utf-8')
+        return b64encode(input_service_token).decode('utf-8')
+
+    def before_create(self):
+        self.generated_token = encryption.generate_key_b64()
+        self.token = encryption.hash_string_sha256(self.generated_token)

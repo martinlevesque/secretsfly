@@ -1,0 +1,37 @@
+{% extends 'admin/layout.html' %}
+
+{% block body %}
+
+    <h1>New Service Token for {{ project.name }}</h1>
+
+    <form method="POST" class="pure-form pure-form-aligned" action="/admin/projects/{{project.id}}/service-tokens/">
+        <fieldset>
+            <div class="pure-control-group">
+                <label for="friendly-name">Friendly Name *</label>
+                <input type="text" name="friendly_name" class="pure-input-1-2" id="friendly-name" placeholder="Friendly Name" />
+            </div>
+
+            <div class="pure-control-group">
+                <label for="environment-id">Environment *</label>
+                <select id="environment-id" name="environment_id">
+                    {% for environment in environments %}
+                        <option value="{{ environment.id }}">{{ environment.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="pure-control-group">
+                <label for="rights">Rights *</label>
+                <select id="rights" name="rights" multiple>
+                    <option value="read" selected="selected">Read</option>
+                    <option value="write">Write</option>
+                </select>
+            </div>
+
+            <div class="pure-controls">
+                <button type="submit" class="pure-button pure-button-primary">Create</button>
+            </div>
+        </fieldset>
+    </form>
+
+{% endblock %}

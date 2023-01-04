@@ -2,6 +2,7 @@ from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
 from base64 import b64encode, b64decode
+import hashlib
 
 
 def generate_key_b64():
@@ -9,6 +10,21 @@ def generate_key_b64():
     orig_key = get_random_bytes(32)
     return b64encode(orig_key).decode('utf-8')
 
+
+def hash_string_sha256(string):
+    # Encode the string as bytes
+    string_bytes = string.encode()
+
+    # Create a new hash object
+    hash_object = hashlib.sha256()
+
+    # Feed the string bytes into the hash object
+    hash_object.update(string_bytes)
+
+    # Get the hexadecimal representation of the hash
+    hash_hex = hash_object.hexdigest()
+
+    return hash_hex
 
 def b64_to_bytes(b64_str):
     return b64decode(b64_str)
