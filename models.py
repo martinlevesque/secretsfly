@@ -33,6 +33,7 @@ class Environment(Base):
 
 SERVICE_RIGHT_READ = 'read'
 SERVICE_RIGHT_WRITE = 'write'
+PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR = ':'
 
 class ServiceToken(Base):
     __tablename__ = 'service_tokens'
@@ -48,7 +49,8 @@ class ServiceToken(Base):
         return ','.join(input_rights)
 
     def public_service_token(self, project_master_key):
-        input_service_token = bytes(f"{project_master_key}:{self.generated_token}", 'utf-8')
+        input_service_token = \
+            bytes(f"{project_master_key}{PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR}{self.generated_token}", 'utf-8')
         return b64encode(input_service_token).decode('utf-8')
 
     def before_create(self):

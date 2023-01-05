@@ -43,4 +43,6 @@ subprocess.call('env > out.txt', shell=True)
 
 ### API `list secrets using a service tok`en+master key
 
+### validation of master key - it should not contain :
+
 
