@@ -48,3 +48,16 @@ def test_admin_set_project_master_key_endpoint(client, monkeypatch):
     with freeze_time(datetime.fromtimestamp(current_t + test_wait_duration + 1)):
         response = client.get(f"/admin/projects/{new_project.id}/")
         util.assert_response_contains_html("Project master key is not currently set", response)
+
+
+def test_admin_set_project_master_key_with_invalid_master_key(client, monkeypatch):
+    current_t = time.time()
+    test_wait_duration = 5
+    monkeypatch.setenv('ADMIN_MASTER_KEY_EXPIRATION', str(test_wait_duration))
+    client.post('/admin/projects/', data={'name': 'Test Project inv master key'})
+    new_project = session.query(Project).order_by(Project.id.desc()).first()
+
+    response = client.post(f"/admin/projects/{new_project.id}/set-master-key",
+                           data={f"master_key_{new_project.id}": 'mymasterkey:invalid'})
+
+    assert response.status_code == 400

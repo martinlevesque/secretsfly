@@ -35,7 +35,9 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] UI set time to live of session to ~1 hour
 
-### UI ability to generate a service token for a project+environment: read/write
+### [DONE] UI ability to generate a service token for a project+environment: read/write
+
+### UI list service tokens for a project+environment
 
 ### UI create a new secret on a project, with *version*
 
@@ -43,6 +45,6 @@ subprocess.call('env > out.txt', shell=True)
 
 ### API `list secrets using a service tok`en+master key
 
-### validation of master key - it should not contain :
+### [DONE] validation of master key - it should not contain :
 
 

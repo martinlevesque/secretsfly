@@ -6,6 +6,9 @@ from base64 import b64encode
 Base = declarative_base()
 
 
+PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR = ':'
+
+
 class Project(Base):
     __tablename__ = 'projects'
 
@@ -17,6 +20,9 @@ class Project(Base):
         # root projects have special features, such as having its own master key
 
         return True
+
+    def master_key_format_valid(master_key):
+        return master_key and PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR not in master_key
 
     def generate_master_key(self):
         if self.is_root_project():
@@ -33,7 +39,6 @@ class Environment(Base):
 
 SERVICE_RIGHT_READ = 'read'
 SERVICE_RIGHT_WRITE = 'write'
-PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR = ':'
 
 class ServiceToken(Base):
     __tablename__ = 'service_tokens'

@@ -46,6 +46,11 @@ def get_project(project_id):
 def set_project_master_key(project_id):
     project = session.query(Project).filter_by(id=project_id).first()
 
+    master_key = request.form.get(f"master_key_{project.id}")
+
+    if not Project.master_key_format_valid(master_key):
+        return {"error": "Invalid master key format"}, 400
+
     http_session['projects_master_keys'] = http_session.get('projects_master_keys', {})
     http_session['projects_master_keys'][str(project.id)] = {
         'key': request.form[f"master_key_{project.id}"],
