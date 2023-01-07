@@ -37,7 +37,7 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] UI ability to generate a service token for a project+environment: read/write
 
-### UI list service tokens for a project+environment
+### [DONE] UI list service tokens for a project+environment
 
 ### UI create a new secret on a project, with *version*
 

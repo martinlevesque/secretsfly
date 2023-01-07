@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, UniqueConstraint
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from lib import encryption
@@ -70,4 +70,15 @@ class ServiceToken(Base):
     def before_create(self):
         self.generated_token = encryption.generate_key_b64()
         self.token = encryption.hash_string_sha256(self.generated_token)
+
+
+class Secret(Base):
+    __tablename__ = 'secrets'
+
+    id = Column(Integer, primary_key=True)
+    project_id = Column(Integer, ForeignKey(Project.id), nullable=False)
+    environment_id = Column(Integer, ForeignKey(Environment.id), nullable=False)
+    name = Column(String, nullable=False)
+    comment = Column(String, nullable=False)
+
 
