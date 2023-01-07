@@ -2,7 +2,7 @@ import re
 import base64
 from tests import util
 from db import session
-from models import ServiceToken, Project, PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR
+from models import Environment, ServiceToken, Project, PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR
 from lib import encryption
 
 
@@ -16,12 +16,35 @@ def make_project(client, project_name, master_key):
 
     return project
 
+
+def make_service_token(client, project, payload):
+    return client.post(f"/admin/projects/{project.id}/service-tokens/", data=payload)
+
+
 def test_admin_service_tokens_endpoint(client):
+    # delete all service tokens
+    session.query(ServiceToken).delete()
+
+    # make a project
     project = make_project(client, "Test Project 5", "my-master-key")
+
+    # make a service token
+    friendly_name = 'ST test listing'
+    make_service_token(client, project, {
+        'friendly_name': friendly_name,
+        'environment_id': 1,
+        'rights': 'read'
+    })
+
+    # find environment 1
+    environment = session.query(Environment).filter(Environment.id == 1).first()
+
     response = client.get(f"/admin/projects/{project.id}/service-tokens/")
 
     assert response.status_code == 200
     util.assert_response_contains_html(f"Service Tokens for project Test Project 5", response)
+    util.assert_response_contains_html(friendly_name, response)
+    util.assert_response_contains_html(environment.name, response)
 
 
 def test_admin_service_tokens_new_endpoint(client):
@@ -34,12 +57,11 @@ def test_admin_service_tokens_new_endpoint(client):
 
 def test_admin_create_service_token_endpoint(client):
     project = make_project(client, "Test Project create service token", "my-master-key")
-    response = client.post(f"/admin/projects/{project.id}/service-tokens/",
-                           data={
-                               'friendly_name': 'ST 1',
-                               'environment_id': 1,
-                               'rights': 'read'
-                           })
+    response = make_service_token(client, project, {
+        'friendly_name': 'ST 1',
+        'environment_id': 1,
+        'rights': 'read'
+    })
 
     assert response.status_code == 200
     util.assert_response_contains_html("service_token_input", response)

@@ -21,11 +21,24 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Name</th>
+                <th>Service Token Name</th>
+                <th>Environment name</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
+            {% for service_token in service_tokens %}
+
+            <tr>
+                <td>{{ service_token.id }}</td>
+                <td>{{ service_token.friendly_name }}</td>
+                <td>{{ service_token.environment.name }}</td>
+                <td>
+                    <ul>
+                    </ul>
+                </td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 

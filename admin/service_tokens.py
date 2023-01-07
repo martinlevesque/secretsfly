@@ -16,10 +16,12 @@ def before_request_load_project():
     project_id = request.view_args['project_id']
     g.project = session.query(Project).filter_by(id=project_id).first()  # Load something by ID
 
+
 @bp.before_request
 def before_request_ensure_have_project_master_in_session():
     if not master_key_session_set(g.project):
         return redirect(url_for('admin.admin_projects.get_project', project_id=g.project.id))
+
 
 ### Endpoints
 
@@ -39,8 +41,15 @@ def index(project_id):
 
         new_public_service_token = service_token.public_service_token(master_key_session_set(g.project).get('key'))
 
+    # service tokens ordered by id desc with environment name
+    service_tokens = session.query(ServiceToken) \
+        .filter_by(project_id=project_id) \
+        .join(Environment, ServiceToken.environment_id == Environment.id) \
+        .order_by(ServiceToken.id.desc()).all()
+
     return render_template('admin/service_tokens/index.html',
                            project=g.project,
+                           service_tokens=service_tokens,
                            new_public_service_token=new_public_service_token)
 
 
@@ -50,4 +59,4 @@ def new(project_id):
     environments = session.query(Environment).all()
     return render_template('admin/service_tokens/new.html',
                            project=g.project,
-                           environments = environments)
+                           environments=environments)
