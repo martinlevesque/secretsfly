@@ -1,8 +1,9 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
+from datetime import datetime
+from base64 import b64encode
+from sqlalchemy import create_engine, Column, event, DateTime, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from lib import encryption
-from base64 import b64encode
 
 Base = declarative_base()
 
@@ -71,6 +72,13 @@ class ServiceToken(Base):
         self.generated_token = encryption.generate_key_b64()
         self.token = encryption.hash_string_sha256(self.generated_token)
 
+        return self
+
+
+@event.listens_for(ServiceToken, 'before_insert')
+def populate_service_token_before_create(__mapper, __connection, target):
+    target.generated_token = encryption.generate_key_b64()
+    target.token = encryption.hash_string_sha256(target.generated_token)
 
 class Secret(Base):
     __tablename__ = 'secrets'
@@ -82,3 +90,17 @@ class Secret(Base):
     comment = Column(String, nullable=False)
 
 
+class SecretValueHistory(Base):
+    __tablename__ = 'secret_value_histories'
+
+    id = Column(Integer, primary_key=True)
+    secret_id = Column(Integer, ForeignKey(Secret.id), nullable=False)
+    encrypted_value = Column(String, nullable=False)
+    comment = Column(String, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
+@event.listens_for(SecretValueHistory, 'before_update')
+def populate_secret_value_history_updated_at(mapper, connection, target):
+    target.updated_at = datetime.datetime.utcnow()

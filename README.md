@@ -41,6 +41,8 @@ subprocess.call('env > out.txt', shell=True)
 
 ### UI create a new secret on a project, with *version*
 
+### Test store large secret
+
 ### UI delete a secret on a project
 
 ### API `list secrets using a service tok`en+master key

@@ -13,4 +13,7 @@ DB_URL = f"sqlite:////{project_root}/db/self-secrets-manager-{db_env}.db"
 
 engine = create_engine(DB_URL)
 
-session = scoped_session(sessionmaker(bind=engine))
+Session = sessionmaker(bind=engine)
+
+session = scoped_session(Session)
+

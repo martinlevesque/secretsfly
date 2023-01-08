@@ -34,7 +34,6 @@ def index(project_id):
         service_token = ServiceToken(**request.form)
         service_token.project_id = project_id
         service_token.rights = ServiceToken.stringify_list_rights(request.form.getlist('rights'))
-        service_token.before_create()
 
         session.add(service_token)
         session.commit()
