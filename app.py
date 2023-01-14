@@ -23,7 +23,7 @@ app.register_blueprint(admin_endpoints)
 
 app.logger.debug('Initializing global environments')
 
-AVAILABLE_ENVIRONMENTS = os.environ.get('AVAILABLE_ENVIRONMENTS', 'prod').split(',')
+AVAILABLE_ENVIRONMENTS = os.environ.get('AVAILABLE_ENVIRONMENTS', 'dev,staging,prod').split(',')
 
 if not len(AVAILABLE_ENVIRONMENTS):
     raise Exception('No environments defined in AVAILABLE_ENVIRONMENTS')

@@ -25,4 +25,15 @@
     </form>
     {% endif %}
 
+    <div class="pure-g">
+
+        {% for environment in environments %}
+            <div class="pure-u-1-{{ nb_environments }}">
+                <div class="l-box">
+                    <h3>{{ environment.name }}</h3>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
 {% endblock %}

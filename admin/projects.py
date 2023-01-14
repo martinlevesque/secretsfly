@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from flask import session as http_session
 from admin.session_util import master_key_session_set
 from db import session
-from models import Project
+from models import Environment, Project
 from admin.service_tokens import bp as service_tokens_endpoints
 
 bp = Blueprint('admin_projects', __name__, url_prefix='/projects/')
@@ -37,8 +37,13 @@ def index():
 def get_project(project_id):
     project = session.query(Project).filter_by(id=project_id).first()
 
+    # retrieve all environments - environments could be specific to a project
+    environments = session.query(Environment).all()
+
     return render_template('admin/projects/project.html',
                            project=project,
+                           environments=environments,
+                           nb_environments=len(environments),
                            project_master_key_is_set=master_key_session_set(project))
 
 

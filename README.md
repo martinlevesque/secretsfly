@@ -39,6 +39,8 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] UI list service tokens for a project+environment
 
+### [DONE] UI display project environments
+
 ### UI create a new secret on a project, with *version*
 
 ### Test store large secret

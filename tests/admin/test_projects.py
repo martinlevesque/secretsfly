@@ -3,7 +3,7 @@ from freezegun import freeze_time
 from datetime import datetime
 from tests import util
 from db import session
-from models import Project
+from models import Environment, Project
 from flask import session as http_session
 
 
@@ -41,9 +41,15 @@ def test_admin_set_project_master_key_endpoint(client, monkeypatch):
     assert response.status_code == 302
     assert http_session['projects_master_keys'][str(new_project.id)]['key'] == 'my-master-key'
 
-    response = client.get(f"/admin/projects/{new_project.id}")
+    response = client.get(f"/admin/projects/{new_project.id}/")
 
     util.assert_response_does_not_contain_html("Project master key is not currently set", response)
+
+    # all environments should be listed in the project page
+    environments = session.query(Environment).all()
+
+    for environment in environments:
+        util.assert_response_contains_html(environment.name, response)
 
     with freeze_time(datetime.fromtimestamp(current_t + test_wait_duration + 1)):
         response = client.get(f"/admin/projects/{new_project.id}/")
