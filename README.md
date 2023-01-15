@@ -41,7 +41,7 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] UI display project environments
 
-### UI list secrets without values
+### [DONE] UI list secrets without values
 
 ### UI create a new secret on a project, with *version*
 

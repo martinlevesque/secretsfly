@@ -17,6 +17,13 @@ bp.register_blueprint(secrets_endpoints)
 
 
 @bp.before_request
+def before_request_load_environment():
+    environment_id = request.view_args.get('environment_id')
+
+    if environment_id:
+        g.environment = session.query(Environment).filter_by(id=environment_id).first()  # Load something by ID
+
+@bp.before_request
 def before_request_load_project():
     project_id = request.view_args.get('project_id')
 

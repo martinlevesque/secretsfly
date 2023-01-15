@@ -4,21 +4,8 @@ from tests import util
 from db import session
 from models import Environment, ServiceToken, Project, PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR
 from lib import encryption
+from tests.admin.helpers import make_project, make_service_token
 
-
-def make_project(client, project_name, master_key):
-    client.post('/admin/projects/', data={'name': project_name})
-
-    project = session.query(Project).order_by(Project.id.desc()).first()
-
-    client.post(f"/admin/projects/{project.id}/set-master-key",
-                data={f"master_key_{project.id}": master_key})
-
-    return project
-
-
-def make_service_token(client, project, payload):
-    return client.post(f"/admin/projects/{project.id}/service-tokens/", data=payload)
 
 
 def test_admin_service_tokens_endpoint(client):
