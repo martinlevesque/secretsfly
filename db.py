@@ -9,7 +9,7 @@ db_env = 'current'
 if os.environ.get('ENV'):
     db_env = os.environ.get('ENV')
 
-DB_URL = f"sqlite:////{project_root}/db/self-secrets-manager-{db_env}.db"
+DB_URL = f"sqlite:////{project_root}/db/secretsfly-{db_env}.db"
 
 engine = create_engine(DB_URL)
 

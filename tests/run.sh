@@ -1,5 +1,5 @@
 
-cp ./db/self-secrets-manager-current.db ./db/self-secrets-manager-test.db
+cp ./db/secretsfly-current.db ./db/secretsfly-test.db
 export ENV=test
 
 python -m pytest

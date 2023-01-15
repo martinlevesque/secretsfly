@@ -2,5 +2,5 @@
 
 __pycache__/
 
-db/self-secrets-manager-dev.db
-db/self-secrets-manager-test.db
+db/secretsfly-dev.db
+db/secretsfly-test.db

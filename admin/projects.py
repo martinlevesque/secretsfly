@@ -1,14 +1,27 @@
 import time
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, g
 from flask import session as http_session
 from admin.session_util import master_key_session_set
 from db import session
 from models import Environment, Project
 from admin.service_tokens import bp as service_tokens_endpoints
+from admin.secrets import bp as secrets_endpoints
 
 bp = Blueprint('admin_projects', __name__, url_prefix='/projects/')
 
 bp.register_blueprint(service_tokens_endpoints)
+bp.register_blueprint(secrets_endpoints)
+
+
+# Callbacks
+
+
+@bp.before_request
+def before_request_load_project():
+    project_id = request.view_args.get('project_id')
+
+    if project_id:
+        g.project = session.query(Project).filter_by(id=project_id).first()  # Load something by ID
 
 
 @bp.route('/', methods=['GET', 'POST'])
@@ -68,4 +81,3 @@ def set_project_master_key(project_id):
 @bp.route('/new')
 def new():
     return render_template('admin/projects/new.html')
-

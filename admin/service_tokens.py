@@ -12,12 +12,6 @@ bp = Blueprint('admin_service_tokens', __name__, url_prefix='/')
 
 
 @bp.before_request
-def before_request_load_project():
-    project_id = request.view_args['project_id']
-    g.project = session.query(Project).filter_by(id=project_id).first()  # Load something by ID
-
-
-@bp.before_request
 def before_request_ensure_have_project_master_in_session():
     if not master_key_session_set(g.project):
         return redirect(url_for('admin.admin_projects.get_project', project_id=g.project.id))
