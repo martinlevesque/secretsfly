@@ -1,4 +1,9 @@
 
+# secretsfly
+
+secretsfly is an easy to use, secure, and fast secrets management tool with a focus on self-hosting and security.
+Don't let third party manage your secrets, keep them yourself and avoid the risk of data leaks.
+
 ## Environment variables
 
 - `AVAILABLE_ENVIRONMENTS`: Default: prod. Comma separated list of environments available globally.
