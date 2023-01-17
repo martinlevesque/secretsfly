@@ -22,7 +22,7 @@ def index(project_id, environment_id):
     secrets = session.query(Secret) \
         .filter_by(project_id=project_id) \
         .filter_by(environment_id=environment_id) \
-        .order_by(Secret.name.asc()).all()
+        .order_by(Secret.name.desc()).all()
 
     return render_template('admin/secrets/index.html',
                            project=g.project,
