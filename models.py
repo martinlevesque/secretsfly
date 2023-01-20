@@ -68,11 +68,6 @@ class ServiceToken(Base):
             bytes(f"{project_master_key}{PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR}{self.generated_token}", 'utf-8')
         return b64encode(input_service_token).decode('utf-8')
 
-    def before_create(self):
-        self.generated_token = encryption.generate_key_b64()
-        self.token = encryption.hash_string_sha256(self.generated_token)
-
-        return self
 
 
 @event.listens_for(ServiceToken, 'before_insert')
@@ -89,6 +84,11 @@ class Secret(Base):
     name = Column(String, nullable=False)
     comment = Column(String, nullable=False)
 
+
+@event.listens_for(Secret, 'before_insert')
+def populate_service_token_before_create(__mapper, __connection, target):
+    if not target.comment:
+        target.comment = ''
 
 class SecretValueHistory(Base):
     __tablename__ = 'secret_value_histories'
