@@ -96,9 +96,13 @@ class SecretValueHistory(Base):
     id = Column(Integer, primary_key=True)
     secret_id = Column(Integer, ForeignKey(Secret.id), nullable=False)
     encrypted_value = Column(String, nullable=False)
+    iv_value = Column(String, nullable=False)
     comment = Column(String, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+    def decrypted_value(self, project_master_key):
+        return encryption.decrypt(project_master_key, self.encrypted_value, self.iv_value)
 
 
 @event.listens_for(SecretValueHistory, 'before_update')

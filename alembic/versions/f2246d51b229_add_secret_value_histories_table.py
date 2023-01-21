@@ -22,6 +22,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('secret_id', sa.Integer(), nullable=False),
     sa.Column('encrypted_value', sa.String(), nullable=False),
+    sa.Column('iv_value', sa.String(), nullable=False),
     sa.Column('comment', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
