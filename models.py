@@ -84,6 +84,9 @@ class Secret(Base):
     name = Column(String, nullable=False)
     comment = Column(String, nullable=False)
 
+    def encrypt_value(project_master_key, decrypted_value):
+        return encryption.encrypt(project_master_key, decrypted_value)
+
 
 @event.listens_for(Secret, 'before_insert')
 def populate_service_token_before_create(__mapper, __connection, target):
@@ -100,6 +103,13 @@ class SecretValueHistory(Base):
     comment = Column(String, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+    value = None
+
+    def decrypt(self, project_master_key):
+        self.value = self.decrypted_value(project_master_key)
+        
+        return self.value
 
     def decrypted_value(self, project_master_key):
         return encryption.decrypt(project_master_key, self.encrypted_value, self.iv_value)

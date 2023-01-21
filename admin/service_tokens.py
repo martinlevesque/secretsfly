@@ -1,7 +1,7 @@
 import time
 from flask import Blueprint, render_template, request, redirect, url_for, g
 from flask import session as http_session
-from admin.session_util import master_key_session_set
+from admin.session_util import master_key_session_set, ensure_have_project_master_in_session
 from db import session
 from models import Environment, Project, ServiceToken
 
@@ -13,8 +13,7 @@ bp = Blueprint('admin_service_tokens', __name__, url_prefix='/')
 
 @bp.before_request
 def before_request_ensure_have_project_master_in_session():
-    if not master_key_session_set(g.project):
-        return redirect(url_for('admin.admin_projects.get_project', project_id=g.project.id))
+    return ensure_have_project_master_in_session()
 
 
 ### Endpoints
