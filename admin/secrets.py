@@ -26,6 +26,7 @@ def before_request_ensure_have_project_master_in_session():
 
 SECRET_DEFAULT_VALUE = '--------'
 
+
 @bp.route('/<project_id>/environments/<environment_id>/secrets/', methods=['GET', 'POST'])
 def index(project_id, environment_id):
     if g.requires_master_key:
@@ -54,7 +55,15 @@ def index(project_id, environment_id):
             if '[name]' in variable_name:
                 secrets[id_is]['name'] = variable_value
 
+            if '[value]' in variable_name:
+                secrets[id_is]['value'] = variable_value
+
         for variable_id, variable in secrets.items():
+            variable_value = variable.get('value')
+
+            if not variable_value:
+                continue
+
             stripped_name = variable['name'].strip().upper()
 
             # find secret by project_id, environment_id and name
@@ -97,25 +106,14 @@ def index(project_id, environment_id):
         .order_by(Secret.name.desc()).all()
 
     if g.with_decryption:
-        secret_ids = [secret.id for secret in secrets]
-        secret_latest_values_distinct_on_secret_id = session.query(SecretValueHistory) \
-            .filter(SecretValueHistory.secret_id.in_(secret_ids)) \
-            .order_by(SecretValueHistory.secret_id.desc(), SecretValueHistory.id.desc()).distinct(
-            SecretValueHistory.secret_id).all()
+        for secret in secrets:
+            latest_secret_history_value = session.query(SecretValueHistory) \
+                .filter_by(secret_id=secret.id) \
+                .order_by(SecretValueHistory.id.desc()) \
+                .first()
 
-        hash_secrets = {secret.id: secret for secret in secrets}
-        for secret_value_history in secret_latest_values_distinct_on_secret_id:
-            hash_secrets[secret_value_history.secret_id].value = secret_value_history.decrypt(
-                g.project_master_key)
-            print(hash_secrets[secret_value_history.secret_id].value)
-
-    """
-    from sqlalchemy.orm import subqueryload
-session = create_session()
-secrets = session.query(Secret).options(subqueryload(Secret.latest_secret_value_history)).all()
-for secret in secrets:
-    print(secret.latest_secret_value_history.id)
-    """
+            if latest_secret_history_value:
+                secret.value = latest_secret_history_value.decrypted_value(g.project_master_key)
 
     return render_template('admin/secrets/index.html',
                            project=g.project,
