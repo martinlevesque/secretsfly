@@ -55,9 +55,11 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] UI list secrets without values
 
-### UI create a new secret on a project, with *version*
+### [DONE] UI listing secret for a given environment (no value)
 
-### UI button to decrypt secret values
+### [DONE] UI listing secret for a given environment (decrypted values)
+
+### [DONE] UI create a new secret on a project, with *version*
 
 ### UI on decrypted secrets page, redirect after few minutes
 

@@ -35,70 +35,8 @@ def index(project_id, environment_id):
 
     if request.method == 'POST':
 
-        def extract_secret_id(attribute_name, secret_name):
-            begin_with = "secrets["
-            ends_with = f"][{attribute_name}]"
-            if begin_with in secret_name and ends_with in secret_name:
-                return secret_name[secret_name.index(begin_with) + len(begin_with):secret_name.index(ends_with)]
-
-        secrets = {}
-
-        for variable_name, variable_value in request.form.items():
-            if variable_value == SECRET_DEFAULT_VALUE:
-                continue
-
-            id_is = extract_secret_id('name', variable_name) or extract_secret_id('value', variable_name)
-
-            if not secrets.get(id_is):
-                secrets[id_is] = {}
-
-            if '[name]' in variable_name:
-                secrets[id_is]['name'] = variable_value
-
-            if '[value]' in variable_name:
-                secrets[id_is]['value'] = variable_value
-
-        for variable_id, variable in secrets.items():
-            variable_value = variable.get('value')
-
-            if not variable_value:
-                continue
-
-            stripped_name = variable['name'].strip().upper()
-
-            # find secret by project_id, environment_id and name
-            secret = None
-
-            if 'new' not in variable_id:
-                secret = session.query(Secret).filter_by(
-                    project_id=project_id,
-                    environment_id=environment_id,
-                    id=int(variable_id)) \
-                    .first()
-
-            if not secret:
-                secret = Secret(project_id=project_id, environment_id=environment_id, name=stripped_name)
-
-                session.add(secret)
-                session.commit()
-
-            latest_secret_history_value = session.query(SecretValueHistory) \
-                .filter_by(secret_id=secret.id) \
-                .order_by(SecretValueHistory.id.desc()) \
-                .first()
-
-            if not latest_secret_history_value or \
-                    latest_secret_history_value.decrypted_value(g.project_master_key) != variable_value:
-                # insert new secret value history
-                encrypted_value_info = Secret.encrypt_value(g.project_master_key, variable_value)
-
-                secret_value_history = SecretValueHistory(
-                    secret_id=secret.id,
-                    encrypted_value=encrypted_value_info['ciphered_data'],
-                    iv_value=encrypted_value_info['iv'],
-                    comment='')
-                session.add(secret_value_history)
-                session.commit()
+        secrets = secrets_from_form(request.form)
+        upsert_secrets(project_id, environment_id, secrets)
 
     secrets = session.query(Secret) \
         .filter_by(project_id=project_id) \
@@ -106,17 +44,83 @@ def index(project_id, environment_id):
         .order_by(Secret.name.desc()).all()
 
     if g.with_decryption:
-        for secret in secrets:
-            latest_secret_history_value = session.query(SecretValueHistory) \
-                .filter_by(secret_id=secret.id) \
-                .order_by(SecretValueHistory.id.desc()) \
-                .first()
-
-            if latest_secret_history_value:
-                secret.value = latest_secret_history_value.decrypted_value(g.project_master_key)
+        Secret.decrypt_secrets(secrets, g.project_master_key)
 
     return render_template('admin/secrets/index.html',
                            project=g.project,
                            environment=g.environment,
                            secrets=secrets,
                            SECRET_DEFAULT_VALUE=SECRET_DEFAULT_VALUE)
+
+
+def extract_secret_id(attribute_name, secret_name):
+    begin_with = "secrets["
+    ends_with = f"][{attribute_name}]"
+
+    if begin_with in secret_name and ends_with in secret_name:
+        return secret_name[secret_name.index(begin_with) + len(begin_with):secret_name.index(ends_with)]
+
+
+def secrets_from_form(form_variables):
+    secrets = {}
+
+    for variable_name, variable_value in form_variables.items():
+        if variable_value == SECRET_DEFAULT_VALUE:
+            continue
+
+        id_is = extract_secret_id('name', variable_name) or extract_secret_id('value', variable_name)
+
+        if not secrets.get(id_is):
+            secrets[id_is] = {}
+
+        if '[name]' in variable_name:
+            secrets[id_is]['name'] = variable_value
+
+        if '[value]' in variable_name:
+            secrets[id_is]['value'] = variable_value
+
+    return secrets
+
+
+def upsert_secrets(project_id, environment_id, secrets):
+    for variable_id, variable in secrets.items():
+        variable_value = variable.get('value')
+
+        if not variable_value:
+            continue
+
+        stripped_name = variable['name'].strip().upper()
+
+        # find secret by project_id, environment_id and name
+        secret = None
+
+        if 'new' not in variable_id:
+            secret = session.query(Secret).filter_by(
+                project_id=project_id,
+                environment_id=environment_id,
+                id=int(variable_id)) \
+                .first()
+
+        if not secret:
+            secret = Secret(project_id=project_id, environment_id=environment_id, name=stripped_name)
+
+            session.add(secret)
+            session.commit()
+
+        latest_secret_history_value = session.query(SecretValueHistory) \
+            .filter_by(secret_id=secret.id) \
+            .order_by(SecretValueHistory.id.desc()) \
+            .first()
+
+        if not latest_secret_history_value or \
+                latest_secret_history_value.decrypted_value(g.project_master_key) != variable_value:
+            # insert new secret value history
+            encrypted_value_info = Secret.encrypt_value(g.project_master_key, variable_value)
+
+            secret_value_history = SecretValueHistory(
+                secret_id=secret.id,
+                encrypted_value=encrypted_value_info['ciphered_data'],
+                iv_value=encrypted_value_info['iv'],
+                comment='')
+            session.add(secret_value_history)
+            session.commit()

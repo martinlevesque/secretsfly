@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, Column, event, DateTime, Integer, String, 
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from lib import encryption
+from db import session
 
 Base = declarative_base()
 
@@ -69,11 +70,11 @@ class ServiceToken(Base):
         return b64encode(input_service_token).decode('utf-8')
 
 
-
 @event.listens_for(ServiceToken, 'before_insert')
 def populate_service_token_before_create(__mapper, __connection, target):
     target.generated_token = encryption.generate_key_b64()
     target.token = encryption.hash_string_sha256(target.generated_token)
+
 
 class Secret(Base):
     __tablename__ = 'secrets'
@@ -83,15 +84,34 @@ class Secret(Base):
     environment_id = Column(Integer, ForeignKey(Environment.id), nullable=False)
     name = Column(String, nullable=False)
     comment = Column(String, nullable=False)
+    secret_history_values = relationship('SecretValueHistory', back_populates='secret')
+
+    def latest_value_history(self):
+        # latest SecretValueHistory by secret_id
+        return session.query(SecretValueHistory) \
+            .filter_by(secret_id=self.id) \
+            .order_by(SecretValueHistory.id.desc()) \
+            .first()
 
     def encrypt_value(project_master_key, decrypted_value):
         return encryption.encrypt(project_master_key, decrypted_value)
+
+    def decrypt_latest_value(self, project_master_key):
+        return self.latest_value_history().decrypted_value(project_master_key)
+
+    def decrypt_secrets(secrets, project_master_key):
+        for secret in secrets:
+            latest_secret_history_value = secret.latest_value_history()
+
+            if latest_secret_history_value:
+                secret.value = latest_secret_history_value.decrypted_value(project_master_key)
 
 
 @event.listens_for(Secret, 'before_insert')
 def populate_service_token_before_create(__mapper, __connection, target):
     if not target.comment:
         target.comment = ''
+
 
 class SecretValueHistory(Base):
     __tablename__ = 'secret_value_histories'
@@ -103,12 +123,13 @@ class SecretValueHistory(Base):
     comment = Column(String, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    secret = relationship('Secret', back_populates='secret_history_values')
 
     value = None
 
     def decrypt(self, project_master_key):
         self.value = self.decrypted_value(project_master_key)
-        
+
         return self.value
 
     def decrypted_value(self, project_master_key):

@@ -1,6 +1,6 @@
-
-from models import Environment, ServiceToken, Project, Secret
+from models import Environment, ServiceToken, Project, Secret, SecretValueHistory
 from db import session
+
 
 def make_project(client, project_name, master_key):
     response = client.post('/admin/projects/', data={'name': project_name})
@@ -18,7 +18,8 @@ def make_project(client, project_name, master_key):
 def make_service_token(client, project, payload):
     return client.post(f"/admin/projects/{project.id}/service-tokens/", data=payload)
 
-def make_secret(project, environment, payload):
+
+def make_secret(project, environment, payload, secret_value=None, master_key=None):
     payload['project_id'] = project.id
     payload['environment_id'] = environment.id
 
@@ -28,5 +29,15 @@ def make_secret(project, environment, payload):
     session.add(secret)
     session.commit()
 
-    return secret
+    if secret_value:
+        encrypted_value_info = Secret.encrypt_value(master_key, secret_value)
 
+        secret_value_history = SecretValueHistory(
+            secret_id=secret.id,
+            encrypted_value=encrypted_value_info['ciphered_data'],
+            iv_value=encrypted_value_info['iv'],
+            comment='')
+        session.add(secret_value_history)
+        session.commit()
+
+    return secret

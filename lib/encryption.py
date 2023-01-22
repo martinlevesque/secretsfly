@@ -26,6 +26,7 @@ def hash_string_sha256(string):
 
     return hash_hex
 
+
 def b64_to_bytes(b64_str):
     return b64decode(b64_str)
 
