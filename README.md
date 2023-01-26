@@ -8,6 +8,7 @@ Don't let third party manage your secrets, keep them yourself and avoid the risk
 
 - `AVAILABLE_ENVIRONMENTS`: Default: prod. Comma separated list of environments available globally.
 - `ADMIN_MASTER_KEY_EXPIRATION`: Default: 300 (in seconds). Master key timeout, after which the master key is deleted from the session.
+- `NB_MINUTES_DECRYPTED_BEFORE_REDIRECT`: Default: 5. Number of minutes before redirecting to the encrypted secrets page from the decrypted page.
 
 ## How it works
 

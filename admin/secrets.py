@@ -1,4 +1,5 @@
 import time
+import os
 from flask import Blueprint, render_template, request, redirect, url_for, g
 from flask import session as http_session
 from admin.session_util import master_key_session_set, ensure_have_project_master_in_session
@@ -25,6 +26,7 @@ def before_request_ensure_have_project_master_in_session():
 ### Endpoints
 
 SECRET_DEFAULT_VALUE = '--------'
+NB_MINUTES_DECRYPTED_BEFORE_REDIRECT = int(os.environ.get('NB_MINUTES_DECRYPTED_BEFORE_REDIRECT', 5))
 
 
 @bp.route('/<project_id>/environments/<environment_id>/secrets/', methods=['GET', 'POST'])
@@ -50,7 +52,9 @@ def index(project_id, environment_id):
                            project=g.project,
                            environment=g.environment,
                            secrets=secrets,
-                           SECRET_DEFAULT_VALUE=SECRET_DEFAULT_VALUE)
+                           with_decryption=g.with_decryption,
+                           SECRET_DEFAULT_VALUE=SECRET_DEFAULT_VALUE,
+                           NB_MINUTES_DECRYPTED_BEFORE_REDIRECT=NB_MINUTES_DECRYPTED_BEFORE_REDIRECT)
 
 
 def extract_secret_id(attribute_name, secret_name):
