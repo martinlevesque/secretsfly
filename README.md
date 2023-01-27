@@ -62,9 +62,9 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] UI create a new secret on a project, with *version*
 
-### UI on decrypted secrets page, redirect after few minutes
+### [DONE] UI on decrypted secrets page, redirect after few minutes
 
-### Test store large secret
+### [DONE] Test store large secret
 
 ### UI delete a secret on a project
 

@@ -10,4 +10,7 @@ function copyTagContent(tagId) {
 
    // Copy the text inside the text field
   navigator.clipboard.writeText(copyText.value);
+
+  copyText.blur();
+  copyText.selectionStart = copyText.selectionEnd;
 }
