@@ -17,7 +17,7 @@ def before_request_ensure_have_project_master_in_session():
     g.with_decryption = request.args.get('decrypt') == 'true'
     g.requires_master_key = g.with_decryption
 
-    if request.method == 'POST' or g.with_decryption:
+    if request.method in ['POST', 'DELETE'] or g.with_decryption:
         g.requires_master_key = True
 
         return ensure_have_project_master_in_session()
@@ -29,14 +29,17 @@ SECRET_DEFAULT_VALUE = '--------'
 NB_MINUTES_DECRYPTED_BEFORE_REDIRECT = int(os.environ.get('NB_MINUTES_DECRYPTED_BEFORE_REDIRECT', 5))
 
 
-@bp.route('/<project_id>/environments/<environment_id>/secrets/', methods=['GET', 'POST'])
-def index(project_id, environment_id):
+def load_master_key():
     if g.requires_master_key:
         project_master_key_info = master_key_session_set(g.project)
         g.project_master_key = project_master_key_info.get('key')
 
-    if request.method == 'POST':
 
+@bp.route('/<project_id>/environments/<environment_id>/secrets/', methods=['GET', 'POST'])
+def index(project_id, environment_id):
+    load_master_key()
+
+    if request.method == 'POST':
         secrets = secrets_from_form(request.form)
         upsert_secrets(project_id, environment_id, secrets)
 
@@ -55,6 +58,33 @@ def index(project_id, environment_id):
                            with_decryption=g.with_decryption,
                            SECRET_DEFAULT_VALUE=SECRET_DEFAULT_VALUE,
                            NB_MINUTES_DECRYPTED_BEFORE_REDIRECT=NB_MINUTES_DECRYPTED_BEFORE_REDIRECT)
+
+
+@bp.route('/<project_id>/environments/<environment_id>/secrets/<secret_id>/destroy/', methods=['POST'])
+def given_secret(project_id, environment_id, secret_id):
+    load_master_key()
+
+    secret = session.query(Secret) \
+        .filter_by(project_id=project_id) \
+        .filter_by(environment_id=environment_id) \
+        .filter_by(id=secret_id) \
+        .one()
+
+    Secret.decrypt_secrets([secret], g.project_master_key)
+
+    secret_values = session.query(SecretValueHistory) \
+        .filter_by(secret_id=secret_id) \
+        .all()
+
+    for secret_value in secret_values:
+        session.delete(secret_value)
+
+    session.delete(secret)
+    session.commit()
+
+    return redirect(url_for('admin.admin_projects.admin_secrets.index',
+                            project_id=project_id,
+                            environment_id=environment_id))
 
 
 def extract_secret_id(attribute_name, secret_name):

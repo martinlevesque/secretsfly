@@ -108,7 +108,7 @@ class Secret(Base):
 
 
 @event.listens_for(Secret, 'before_insert')
-def populate_service_token_before_create(__mapper, __connection, target):
+def populate_secret_before_create(__mapper, __connection, target):
     if not target.comment:
         target.comment = ''
 
@@ -138,4 +138,4 @@ class SecretValueHistory(Base):
 
 @event.listens_for(SecretValueHistory, 'before_update')
 def populate_secret_value_history_updated_at(mapper, connection, target):
-    target.updated_at = datetime.datetime.utcnow()
+    target.updated_at = datetime.utcnow()

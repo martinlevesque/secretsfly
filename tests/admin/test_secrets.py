@@ -86,3 +86,24 @@ def test_admin_create_secret_endpoint(client):
     assert secret.decrypt_latest_value(master_key) == "sec3"
     secret = session.query(Secret).filter(Secret.name == "TEST_SECRET4").first()
     assert secret.decrypt_latest_value(master_key) == "sec4"
+
+
+def test_admin_delete_secret_endpoint(client):
+    # make a project
+    project = helpers.make_project(client, "Test Project secrets delete", "my-master-key")
+
+    environment = session.query(Environment).filter(Environment.id == 1).first()
+
+    secret_payload = {
+        'name': 'test secret123',
+    }
+    secret = helpers.make_secret(project, environment, secret_payload)
+
+    response = client.post(f"/admin/projects/{project.id}/environments/{environment.id}/secrets/{secret.id}/destroy/")
+    assert response.status_code == 302
+
+    response = client.get(f"/admin/projects/{project.id}/environments/{environment.id}/secrets/")
+
+    assert response.status_code == 200
+    util.assert_response_contains_html(f"Secrets for", response)
+    util.assert_response_does_not_contain_html(f"test secret123", response)
