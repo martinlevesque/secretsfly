@@ -86,6 +86,16 @@ class Secret(Base):
     comment = Column(String, nullable=False)
     secret_history_values = relationship('SecretValueHistory', back_populates='secret')
 
+    loaded_project_master_key = None
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'value': self.decrypt_latest_value(self.loaded_project_master_key)
+        }
+
     def latest_value_history(self):
         # latest SecretValueHistory by secret_id
         return session.query(SecretValueHistory) \

@@ -66,9 +66,13 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] Test store large secret
 
-### UI delete a secret on a project
+### [DONE] UI delete a secret on a project
 
-### API `list secrets using a service tok`en+master key
+### API `list secrets using a service token+master key
+
+### define project parent of a given project
+
+### retrieve parent secrets if any, one master key per main project
 
 ### [DONE] validation of master key - it should not contain :
 

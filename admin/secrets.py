@@ -1,6 +1,6 @@
 import time
 import os
-from flask import Blueprint, render_template, request, redirect, url_for, g
+from flask import Blueprint, render_template, request, redirect, url_for, g, jsonify
 from flask import session as http_session
 from admin.session_util import master_key_session_set, ensure_have_project_master_in_session
 from db import session
@@ -21,6 +21,11 @@ def before_request_ensure_have_project_master_in_session():
         g.requires_master_key = True
 
         return ensure_have_project_master_in_session()
+
+
+@bp.before_request
+def before_request_check_format():
+    g.format = 'json' if request.args.get('format') == 'json' else 'html'
 
 
 ### Endpoints
@@ -50,6 +55,13 @@ def index(project_id, environment_id):
 
     if g.with_decryption:
         Secret.decrypt_secrets(secrets, g.project_master_key)
+
+    if g.format == 'json':
+        json_secrets = []
+        for s in secrets:
+            s.loaded_project_master_key = g.project_master_key
+            json_secrets.append(s.serialize)
+        return jsonify(json_list=json_secrets)
 
     return render_template('admin/secrets/index.html',
                            project=g.project,
