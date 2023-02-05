@@ -61,7 +61,7 @@ def index(project_id, environment_id):
         for s in secrets:
             s.loaded_project_master_key = g.project_master_key
             json_secrets.append(s.serialize)
-        return jsonify(json_list=json_secrets)
+        return jsonify(secrets=json_secrets)
 
     return render_template('admin/secrets/index.html',
                            project=g.project,

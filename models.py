@@ -1,5 +1,5 @@
 from datetime import datetime
-from base64 import b64encode
+from base64 import b64encode, b64decode
 from sqlalchemy import create_engine, Column, event, DateTime, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -69,11 +69,36 @@ class ServiceToken(Base):
             bytes(f"{project_master_key}{PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR}{self.generated_token}", 'utf-8')
         return b64encode(input_service_token).decode('utf-8')
 
+    def decode_public_service_token(pub_service_token):
+        decoded_pub_service_token = b64decode(bytes(pub_service_token, 'utf-8')).decode('utf-8')
+        parts = decoded_pub_service_token.split(PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR)
+
+        if len(parts) != 2:
+            raise Exception(f"Invalid public service token: {pub_service_token}")
+
+        project_master_key = parts[0]
+        b64_service_token = parts[1]
+
+        stored_service_token = ServiceToken.hash_token(b64_service_token)
+
+        service_token = session.query(ServiceToken).filter(ServiceToken.token == stored_service_token).first()
+
+        if not service_token:
+            raise Exception(f"Cannot find the service token: {pub_service_token}")
+
+        return {
+            'project_master_key': project_master_key,
+            'service_token': service_token,
+        }
+
+    def hash_token(generated_token):
+        return encryption.hash_string_sha256(generated_token)
+
 
 @event.listens_for(ServiceToken, 'before_insert')
 def populate_service_token_before_create(__mapper, __connection, target):
     target.generated_token = encryption.generate_key_b64()
-    target.token = encryption.hash_string_sha256(target.generated_token)
+    target.token = ServiceToken.hash_token(target.generated_token)
 
 
 class Secret(Base):

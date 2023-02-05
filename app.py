@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 from api.status import bp as status_endpoints
+from api.secrets import bp as secrets_endpoints
 from admin.admin import bp as admin_endpoints
 from lib import encryption
 from models import Environment
@@ -15,6 +16,7 @@ app.secret_key = encryption.generate_key_b64()
 
 # API
 app.register_blueprint(status_endpoints)
+app.register_blueprint(secrets_endpoints)
 
 # Admin
 app.register_blueprint(admin_endpoints)
