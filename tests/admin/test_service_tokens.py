@@ -7,7 +7,6 @@ from lib import encryption
 from tests.admin.helpers import make_project, make_service_token
 
 
-
 def test_admin_service_tokens_endpoint(client):
     # delete all service tokens
     session.query(ServiceToken).delete()
