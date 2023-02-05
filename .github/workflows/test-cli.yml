@@ -28,5 +28,10 @@ jobs:
           sleep 3
           curl http://localhost:5000/api/secrets/ | grep "secret1name"
       - name: Execute the CLI
+        env:
+          SECRETSFLY_TOKEN: 123456
+          SECRETSFLY_API_BASE_URL: http://localhost:5000/api
         run: |
-          ls -la
+          result=$(python cli/cli.py -- env)
+          echo $result | grep "secret1name=secret1value"
+          echo $result | grep "secret2name=secret2value"
