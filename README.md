@@ -70,6 +70,12 @@ subprocess.call('env > out.txt', shell=True)
 
 ### replace master key storage in session
 
+### show if master key unsealed
+
+### button to seal unsealed master key
+
+### thread to auto seal master key
+
 ### API `list secrets using a service token+master key
 
 ### define project parent of a given project
