@@ -68,6 +68,8 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] UI delete a secret on a project
 
+### replace master key storage in session
+
 ### API `list secrets using a service token+master key
 
 ### define project parent of a given project
