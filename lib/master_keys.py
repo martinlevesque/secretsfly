@@ -3,7 +3,7 @@ import copy
 import os
 from lib.log import logger
 
-encrypted_master_keys = {}  # project_id -> { 'master_key': '...', 'set_at': 1234567890 }
+encrypted_master_keys = {}  # project_id -> { 'key': '...', 'set_at': 1234567890 }
 
 
 def master_key_session_set(project):
