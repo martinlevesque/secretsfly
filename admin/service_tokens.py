@@ -1,6 +1,5 @@
 import time
 from flask import Blueprint, render_template, request, redirect, url_for, g
-from flask import session as http_session
 from admin.session_util import master_key_session_set, ensure_have_project_master_in_session
 from db import session
 from models import Environment, Project, ServiceToken

@@ -68,20 +68,21 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] UI delete a secret on a project
 
-### replace master key storage in session
+### [DONE] API `list secrets using a service token+master key
+
+### [DONE] validation of master key - it should not contain :
+
+### [DONE] replace master key storage in session
+
+### thread to auto seal master key
+
+### retrieve parent secrets if any, one master key per main project
 
 ### show if master key unsealed
 
 ### button to seal unsealed master key
 
-### thread to auto seal master key
-
-### API `list secrets using a service token+master key
-
 ### define project parent of a given project
 
-### retrieve parent secrets if any, one master key per main project
-
-### [DONE] validation of master key - it should not contain :
 
 

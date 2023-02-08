@@ -1,5 +1,6 @@
-from flask import session as http_session, g, request, redirect, url_for
+from flask import g, request, redirect, url_for
 from models import ServiceToken
+from lib import master_keys
 
 
 def master_key_session_set(project):
@@ -11,8 +12,7 @@ def master_key_session_set(project):
 
         return {'key': decoded['project_master_key']}
 
-    if http_session.get('projects_master_keys') and http_session['projects_master_keys'].get(str(project.id)):
-        return http_session['projects_master_keys'][str(project.id)]
+    return master_keys.master_key_session_set(project)
 
 
 def ensure_have_project_master_in_session():

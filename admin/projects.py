@@ -1,11 +1,11 @@
 import time
 from flask import Blueprint, render_template, request, redirect, url_for, g
-from flask import session as http_session
 from admin.session_util import master_key_session_set
 from db import session
 from models import Environment, Project
 from admin.service_tokens import bp as service_tokens_endpoints
 from admin.secrets import bp as secrets_endpoints
+from lib import master_keys
 
 bp = Blueprint('admin_projects', __name__, url_prefix='/projects/')
 
@@ -76,11 +76,7 @@ def set_project_master_key(project_id):
     if not Project.master_key_format_valid(master_key):
         return {"error": "Invalid master key format"}, 400
 
-    http_session['projects_master_keys'] = http_session.get('projects_master_keys', {})
-    http_session['projects_master_keys'][str(project.id)] = {
-        'key': request.form[f"master_key_{project.id}"],
-        'set_at': int(time.time())
-    }
+    master_keys.set_master_key(project.id, master_key)
 
     return redirect(url_for('admin.admin_projects.get_project', project_id=project_id))
 
