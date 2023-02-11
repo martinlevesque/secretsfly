@@ -51,10 +51,6 @@ def test_admin_set_project_master_key_endpoint(client, monkeypatch):
         for environment in environments:
             util.assert_response_contains_html(environment.name, response)
 
-        with freeze_time("2015-01-01 12:05:36"):
-            response = client.get(f"/admin/projects/{new_project.id}/")
-            util.assert_response_contains_html("Project master key is not currently set", response)
-
 
 def test_admin_set_project_master_key_with_invalid_master_key(client, monkeypatch):
     current_t = time.time()

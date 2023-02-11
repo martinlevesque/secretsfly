@@ -74,7 +74,7 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] replace master key storage in session
 
-### thread to auto seal master key
+### [DONE] thread to auto seal master key
 
 ### retrieve parent secrets if any, one master key per main project
 

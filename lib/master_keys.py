@@ -1,9 +1,19 @@
 import time
 import copy
 import os
+from threading import Thread
 from lib.log import logger
 
 encrypted_master_keys = {}  # project_id -> { 'key': '...', 'set_at': 1234567890 }
+
+
+def cron_check_master_keys_expiration():
+    while True:
+        check_for_expired_master_key()
+        time.sleep(30)
+
+
+Thread(target=cron_check_master_keys_expiration).start()
 
 
 def master_key_session_set(project):
