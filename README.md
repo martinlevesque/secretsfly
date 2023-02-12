@@ -76,7 +76,9 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] thread to auto seal master key
 
-### retrieve parent secrets if any, one master key per main project
+### admin UI, retrieve parent secrets if any, one master key per main project
+
+### API secrets, retrieve parent secrets if any, one master key per main project
 
 ### display flash if any
 

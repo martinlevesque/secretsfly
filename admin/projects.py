@@ -1,5 +1,5 @@
 import time
-from flask import Blueprint, render_template, request, redirect, url_for, g, flash
+from flask import Blueprint, render_template, request, redirect, url_for, g
 from sqlalchemy import text
 from admin.session_util import master_key_session_set
 from db import session
@@ -40,13 +40,6 @@ def index():
 
     if request.method == 'POST':
         project = Project(**request.form)
-
-        if not project.is_root_project():
-            # find parent project
-            parent_project = session.query(Project).filter_by(id=request.form.get('project_id')).first()
-            if parent_project.project_id:
-                flash('Only 1 sub-level project parent hierarchy is allowed', 'error')
-                return redirect(url_for('admin.admin_projects.index'))
 
         session.add(project)
         session.commit()
@@ -96,5 +89,6 @@ def set_project_master_key(project_id):
 @bp.route('/new')
 def new():
     # retrieve all projects
-    projects = session.query(Project).all()
+    # without project_id, meaning it's a root project
+    projects = session.query(Project).filter_by(project_id=None).all()
     return render_template('admin/projects/new.html', projects=projects)

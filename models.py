@@ -1,6 +1,6 @@
 from datetime import datetime
 from base64 import b64encode, b64decode
-from sqlalchemy import create_engine, Column, event, DateTime, Integer, String, ForeignKey
+from sqlalchemy import create_engine, Column, event, DateTime, Integer, String, ForeignKey, text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from lib import encryption
@@ -31,6 +31,9 @@ class Project(Base):
         if self.is_root_project():
             # new master key only for root projects
             return encryption.generate_key_b64()
+
+    def parent_project(self):
+        return session.query(Project).filter_by(id=self.project_id).first()
 
 
 class Environment(Base):
@@ -114,6 +117,11 @@ class Secret(Base):
 
     loaded_project_master_key = None
 
+    def __str__(self):
+        return f"Secret(id={self.id}, project_id={self.project_id}, environment_id={self.environment_id}, " \
+               f"name={self.name}, comment={self.comment}, value=XXX)"
+
+
     @property
     def serialize(self):
         return {
@@ -141,6 +149,24 @@ class Secret(Base):
 
             if latest_secret_history_value:
                 secret.value = latest_secret_history_value.decrypted_value(project_master_key)
+
+    def retrieve_hierarchy_secrets(project_ids, environment_id):
+        result = session.query(Secret) \
+            .filter(Secret.project_id.in_(project_ids)) \
+            .filter_by(environment_id=environment_id) \
+            .order_by(text('secrets.name DESC, secrets.id ASC')).all()
+
+        # remove parent variable if child one is present
+        elements_to_remove = []
+
+        for index in range(len(result)):
+            if index > 0 and result[index].name == result[index - 1].name:
+                elements_to_remove.append(result[index - 1])
+
+        for element in elements_to_remove:
+            result.remove(element)
+
+        return result
 
 
 @event.listens_for(Secret, 'before_insert')

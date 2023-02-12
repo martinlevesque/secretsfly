@@ -24,6 +24,36 @@ def test_admin_secrets_endpoint(client):
     util.assert_response_contains_html(f"test secret", response)
 
 
+def test_admin_secrets_with_parent_secrets_endpoint(client):
+    master_key = encryption.generate_key_b64()
+    # make a project
+    project = helpers.make_project(client, "Test Project secrets", master_key=master_key)
+    sub_project = helpers.make_project(
+        client,
+        "Test Project sub",
+        master_key=master_key,
+        parent_project_id=project.id
+    )
+
+    environment = session.query(Environment).filter(Environment.id == 1).first()
+
+    helpers.make_secret(project, environment, {'name': 'test secret'}, secret_value='value1', master_key=master_key)
+    helpers.make_secret(project, environment, {'name': 'secondsecret'}, secret_value='value2', master_key=master_key)
+    helpers.make_secret(project, environment, {'name': 'thirdsecret'}, secret_value='value3', master_key=master_key)
+
+    helpers.make_secret(sub_project, environment, {'name': 'thirdsecret'}, secret_value='value3updated',
+                        master_key=master_key)
+
+    response = client.get(f"/admin/projects/{sub_project.id}/environments/{environment.id}/secrets/?decrypt=true")
+
+    assert response.status_code == 200
+    util.assert_response_contains_html(f"Secrets for", response)
+    util.assert_response_contains_html(f"test secret", response)
+    util.assert_response_contains_html("'thirdsecret', `value3updated`", response)
+    util.assert_response_contains_html("'secondsecret', `value2`", response)
+    util.assert_response_contains_html("'test secret', `value1`", response)
+
+
 def test_admin_secrets_endpoint_with_decryption(client):
     # make a project
     master_key = encryption.generate_key_b64()

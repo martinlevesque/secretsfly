@@ -34,7 +34,14 @@
 
                 <tr>
                     <td>{{ project.id }}</td>
-                    <td>{{ project.name }}</td>
+                    <td>
+                        {% if project.project_id %}
+                            <span>
+                               &nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                        {% endif %}
+                        {{ project.name }}
+                    </td>
                     <td>
                         <ul>
                             <li><a href="/admin/projects/{{ project.id }}/">View</a></li>

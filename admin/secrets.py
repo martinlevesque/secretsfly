@@ -1,6 +1,7 @@
 import time
 import os
 from flask import Blueprint, render_template, request, redirect, url_for, g, jsonify
+from sqlalchemy import text
 from admin.session_util import master_key_session_set, ensure_have_project_master_in_session
 from db import session
 from models import Environment, Project, Secret, SecretValueHistory
@@ -47,10 +48,14 @@ def index(project_id, environment_id):
         secrets = secrets_from_form(request.form)
         upsert_secrets(project_id, environment_id, secrets)
 
-    secrets = session.query(Secret) \
-        .filter_by(project_id=project_id) \
-        .filter_by(environment_id=environment_id) \
-        .order_by(Secret.name.desc()).all()
+    # filter by if project_id or g.project.project_id
+    secrets = Secret.retrieve_hierarchy_secrets([project_id, g.project.project_id], environment_id)
+
+    all_secrets = session.query(Secret) \
+        .all()
+
+    for s in all_secrets:
+        print(f"secret: {s}")
 
     if g.with_decryption:
         Secret.decrypt_secrets(secrets, g.project_master_key)

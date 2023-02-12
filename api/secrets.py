@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from db import session
-from models import Secret, ServiceToken
+from models import Project, Secret, ServiceToken
 from lib.log import logger
 
 bp = Blueprint('api_secrets', __name__, url_prefix='/api/secrets/')
@@ -14,10 +14,12 @@ def index():
     project_master_key = decoded['project_master_key']
     service_token = decoded['service_token']
 
-    secrets = session.query(Secret) \
-        .filter_by(project_id=service_token.project_id) \
-        .filter_by(environment_id=service_token.environment_id) \
-        .order_by(Secret.name.desc()).all()
+    project = session.query(Project).filter_by(id=service_token.project_id).first()
+
+    secrets = Secret.retrieve_hierarchy_secrets(
+        [service_token.project_id, project.project_id],
+        service_token.environment_id
+    )
 
     Secret.decrypt_secrets(secrets, project_master_key)
 

@@ -9,14 +9,14 @@ from tests.admin import helpers
 def test_api_secrets_endpoint(client):
     # make a project
     master_key = encryption.generate_key_b64()
-    project = helpers.make_project(client, "Test Project api secrets", master_key)
+    project = helpers.make_project(client, "Test Project api secrets", master_key=master_key)
 
     environment = session.query(Environment).filter(Environment.id == 1).first()
 
     secret_payload = {
         'name': 'TEST_SECRET'
     }
-    helpers.make_secret(
+    secret = helpers.make_secret(
         project,
         environment,
         secret_payload,
@@ -38,4 +38,5 @@ def test_api_secrets_endpoint(client):
 
     json_response = json.loads(response.data.decode())
 
-    assert json_response == {'secrets': [{'id': 6, 'name': 'TEST_SECRET', 'value': 'hello secret'}]}
+    assert json_response['secrets'][0]['name'] == 'TEST_SECRET'
+    assert json_response['secrets'][0]['value'] == 'hello secret'

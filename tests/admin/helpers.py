@@ -2,15 +2,20 @@ from models import Environment, ServiceToken, Project, Secret, SecretValueHistor
 from db import session
 
 
-def make_project(client, project_name, master_key):
-    response = client.post('/admin/projects/', data={'name': project_name})
+def make_project(client, project_name, master_key=None, parent_project_id=None):
+    project_payload = {
+        'name': project_name,
+        'project_id': parent_project_id
+    }
+    response = client.post('/admin/projects/', data=project_payload)
 
     assert response.status_code == 200
 
     project = session.query(Project).order_by(Project.id.desc()).first()
 
-    client.post(f"/admin/projects/{project.id}/set-master-key",
-                data={f"master_key_{project.id}": master_key})
+    if master_key:
+        client.post(f"/admin/projects/{project.id}/set-master-key",
+                    data={f"master_key_{project.id}": master_key})
 
     return project
 
