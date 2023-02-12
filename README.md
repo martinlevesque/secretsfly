@@ -78,11 +78,14 @@ subprocess.call('env > out.txt', shell=True)
 
 ### retrieve parent secrets if any, one master key per main project
 
+### display flash if any
+
+### define project parent of a given project
+
 ### show if master key unsealed
 
 ### button to seal unsealed master key
 
-### define project parent of a given project
 
 
 

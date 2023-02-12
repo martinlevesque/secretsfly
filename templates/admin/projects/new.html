@@ -20,6 +20,16 @@
                 </textarea>
             </div>
 
+            <div class="pure-control-group">
+                <label for="project-id">Parent Project</label>
+                <select id="project-id" name="project_id">
+                    <option value=""></option>
+                    {% for project in projects %}
+                    <option value="{{ project.id }}">{{ project.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
             <div class="pure-controls">
                 <button type="submit" class="pure-button pure-button-primary">Create</button>
             </div>
