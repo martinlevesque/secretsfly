@@ -10,20 +10,22 @@ def test_api_secrets_endpoint(client):
     # make a project
     master_key = encryption.generate_key_b64()
     project = helpers.make_project(client, "Test Project api secrets", master_key=master_key)
-
+    sub_project = helpers.make_project(
+        client,
+        "Test Project sub",
+        master_key=master_key,
+        parent_project_id=project.id
+    )
     environment = session.query(Environment).filter(Environment.id == 1).first()
 
-    secret_payload = {
-        'name': 'TEST_SECRET'
-    }
-    secret = helpers.make_secret(
-        project,
-        environment,
-        secret_payload,
-        secret_value="hello secret",
-        master_key=master_key
-    )
-    response_service_token = helpers.make_service_token(client, project, {
+    helpers.make_secret(project, environment, {'name': 'TEST_SECRET'}, secret_value='value1', master_key=master_key)
+    helpers.make_secret(project, environment, {'name': 'secondsecret'}, secret_value='value2', master_key=master_key)
+    helpers.make_secret(project, environment, {'name': 'thirdsecret'}, secret_value='value3', master_key=master_key)
+
+    helpers.make_secret(sub_project, environment, {'name': 'thirdsecret'}, secret_value='value3updated',
+                        master_key=master_key)
+
+    response_service_token = helpers.make_service_token(client, sub_project, {
         'friendly_name': 'my service token api secrets',
         'environment_id': environment.id,
         'rights': 'read'
@@ -38,5 +40,9 @@ def test_api_secrets_endpoint(client):
 
     json_response = json.loads(response.data.decode())
 
-    assert json_response['secrets'][0]['name'] == 'TEST_SECRET'
-    assert json_response['secrets'][0]['value'] == 'hello secret'
+    assert json_response['secrets'][0]['name'] == 'thirdsecret'
+    assert json_response['secrets'][0]['value'] == 'value3updated'
+    assert json_response['secrets'][1]['name'] == 'secondsecret'
+    assert json_response['secrets'][1]['value'] == 'value2'
+    assert json_response['secrets'][2]['name'] == 'TEST_SECRET'
+    assert json_response['secrets'][2]['value'] == 'value1'

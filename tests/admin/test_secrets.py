@@ -47,8 +47,8 @@ def test_admin_secrets_with_parent_secrets_endpoint(client):
     response = client.get(f"/admin/projects/{sub_project.id}/environments/{environment.id}/secrets/?decrypt=true")
 
     assert response.status_code == 200
-    util.assert_response_contains_html(f"Secrets for", response)
-    util.assert_response_contains_html(f"test secret", response)
+    util.assert_response_contains_html("Secrets for", response)
+    util.assert_response_contains_html("test secret", response)
     util.assert_response_contains_html("'thirdsecret', `value3updated`", response)
     util.assert_response_contains_html("'secondsecret', `value2`", response)
     util.assert_response_contains_html("'test secret', `value1`", response)
