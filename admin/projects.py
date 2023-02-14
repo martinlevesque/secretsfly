@@ -1,5 +1,5 @@
 import time
-from flask import Blueprint, render_template, request, redirect, url_for, g
+from flask import Blueprint, render_template, request, redirect, url_for, g, flash
 from sqlalchemy import text
 from admin.session_util import master_key_session_set
 from db import session
@@ -82,6 +82,7 @@ def set_project_master_key(project_id):
         return {"error": "Invalid master key format"}, 400
 
     master_keys.set_master_key(project.id, master_key)
+    flash('Master key has been set successfully', 'success')
 
     return redirect(url_for('admin.admin_projects.get_project', project_id=project_id))
 

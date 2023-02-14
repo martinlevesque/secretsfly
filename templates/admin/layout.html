@@ -4,12 +4,22 @@
 	<title>secretsfly - Administration</title>
 
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/pure-min.css') }}">
-	<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
 </head>
 <body>
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	  {% if messages %}
+		<ul class="flashes">
+		{% for msg_level, message in messages %}
+		  <li class="{{ msg_level }}">{{ message }}</li>
+		{% endfor %}
+		</ul>
+	  {% endif %}
+	{% endwith %}
 	{% block body %}
 
 	{% endblock %}
 
+	<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 </body>
 </html>

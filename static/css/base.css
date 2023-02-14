@@ -1,0 +1,15 @@
+
+.flashes li.success {
+  background-color: hsl(120, 70%, 85%);
+  /* Define styles for success class applied to li elements within flashes class */
+}
+
+.flashes li.info {
+  background-color: hsl(210, 70%, 80%);
+  /* Define styles for info class applied to li elements within flashes class */
+}
+
+.flashes li.error {
+  background-color: hsl(0, 70%, 80%);
+  /* Define styles for error class applied to li elements within flashes class */
+}

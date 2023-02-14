@@ -82,11 +82,13 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] API secrets, retrieve parent secrets if any, one master key per main project
 
-### display flash if any
+### [DONE] display flash if any
 
 ### show if master key unsealed
 
 ### button to seal unsealed master key
+
+### detect missing secret comparing other environments
 
 
 
