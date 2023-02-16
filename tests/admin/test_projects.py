@@ -4,7 +4,9 @@ from datetime import datetime
 from tests import util
 from db import session
 from models import Environment, Project
+from tests.admin import helpers
 from lib import master_keys
+from lib import encryption
 
 
 def test_admin_projects_endpoint(client):
@@ -15,7 +17,27 @@ def test_admin_projects_endpoint(client):
     util.assert_response_contains_html('Projects (0)', response)
 
 
+def test_admin_projects_endpoint_with_many(client):
+    # generate master ket
+    master_key = encryption.generate_key_b64()
+    project_1 = helpers.make_project(client, "project endpoint 1", master_key=master_key)
+    response = client.post(f"/admin/projects/{project_1.id}/set-master-key",
+                           data={f"master_key_{project_1.id}": master_key})
+    assert response.status_code == 302
+    helpers.make_project(client, "project endpoint 2")
+
+    response = client.get('/admin/projects/')
+
+    assert response.status_code == 200
+
+    util.assert_response_contains_html('Projects (2)', response)
+    assert response.data.count(b'[unsealed]') == 1
+
+
 def test_admin_create_project_endpoint(client):
+    # delete all projects
+    session.query(Project).delete()
+
     response = client.post('/admin/projects/', data={'name': 'Test Project 2'})
 
     project = session.query(Project).order_by(Project.id.desc()).first()
@@ -53,7 +75,6 @@ def test_admin_set_project_master_key_endpoint(client, monkeypatch):
 
 
 def test_admin_set_project_master_key_with_invalid_master_key(client, monkeypatch):
-    current_t = time.time()
     test_wait_duration = 5
     monkeypatch.setenv('ADMIN_MASTER_KEY_EXPIRATION', str(test_wait_duration))
     client.post('/admin/projects/', data={'name': 'Test Project inv master key'})

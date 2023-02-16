@@ -47,15 +47,23 @@ def index():
         if project.is_root_project():
             new_master_key = project.generate_master_key()
 
-    projects = session.query(Project)\
-        .order_by(text('CASE WHEN project_id IS NULL THEN id ELSE project_id END, id'))\
+    projects = session.query(Project) \
+        .order_by(text('CASE WHEN project_id IS NULL THEN id ELSE project_id END, id')) \
         .all()
+    mark_projects_seal_status(projects)
 
     return render_template('admin/projects/index.html',
                            project=project,
                            new_master_key=new_master_key,
                            projects=projects,
                            nb_projects=len(projects))
+
+
+def mark_projects_seal_status(projects):
+    for project in projects:
+        project.sealed = master_keys.is_project_sealed(project)
+
+    return projects
 
 
 @bp.route('/<project_id>/', methods=['GET'])

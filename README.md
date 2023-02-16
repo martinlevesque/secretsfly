@@ -84,7 +84,9 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] display flash if any
 
-### show if master key unsealed
+### [DONE] show if master key unsealed
+
+### bug - list selectable projects in new is not correct
 
 ### button to seal unsealed master key
 

@@ -22,7 +22,7 @@ class Project(Base):
     def is_root_project(self):
         # root projects have special features, such as having its own master key
 
-        return self.project_id is None
+        return not self.project_id
 
     def master_key_format_valid(master_key):
         return master_key and PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR not in master_key

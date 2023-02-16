@@ -41,6 +41,10 @@
                             </span>
                         {% endif %}
                         {{ project.name }}
+
+                        {% if not project.sealed %}
+                            <b>[unsealed]</b>
+                        {% endif %}
                     </td>
                     <td>
                         <ul>

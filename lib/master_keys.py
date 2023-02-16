@@ -22,6 +22,10 @@ def master_key_session_set(project):
     return encrypted_master_keys.get(str(project.id))
 
 
+def is_project_sealed(project):
+    return master_key_session_set(project) is None
+
+
 def delete_master_key(project_id):
     global encrypted_master_keys
 
