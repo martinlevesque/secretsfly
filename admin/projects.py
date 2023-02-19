@@ -95,6 +95,20 @@ def set_project_master_key(project_id):
     return redirect(url_for('admin.admin_projects.get_project', project_id=project_id))
 
 
+@bp.route('/<project_id>/seal', methods=['GET'])
+def seal_project_master_key(project_id):
+    project = session.query(Project).filter_by(id=project_id).first()
+
+    if master_keys.is_project_sealed(project):
+        flash('Project is already sealed', 'error')
+        return redirect(url_for('admin.admin_projects.index'))
+
+    master_keys.delete_master_key(project.id)
+    flash('Master key has been sealed successfully', 'success')
+
+    return redirect(url_for('admin.admin_projects.index'))
+
+
 @bp.route('/new')
 def new():
     # retrieve all projects

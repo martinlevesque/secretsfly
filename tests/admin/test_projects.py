@@ -74,6 +74,22 @@ def test_admin_set_project_master_key_endpoint(client, monkeypatch):
             util.assert_response_contains_html(environment.name, response)
 
 
+def test_admin_seal_project_master_key_endpoint(client, monkeypatch):
+    client.post('/admin/projects/', data={'name': 'Test Project seal'})
+    new_project = session.query(Project).order_by(Project.id.desc()).first()
+
+    client.post(f"/admin/projects/{new_project.id}/set-master-key",
+                data={f"master_key_{new_project.id}": 'my-master-key'})
+
+    assert not master_keys.is_project_sealed(new_project)
+
+    response = client.get(f"/admin/projects/{new_project.id}/seal")
+
+    util.assert_response_does_not_contain_html("Master key has been sealed successfully", response)
+
+    assert master_keys.is_project_sealed(new_project)
+
+
 def test_admin_set_project_master_key_with_invalid_master_key(client, monkeypatch):
     test_wait_duration = 5
     monkeypatch.setenv('ADMIN_MASTER_KEY_EXPIRATION', str(test_wait_duration))

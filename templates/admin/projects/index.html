@@ -43,7 +43,13 @@
                         {{ project.name }}
 
                         {% if not project.sealed %}
-                            <b>[unsealed]</b>
+                            <b>
+                                <a onclick="return confirm('Are you sure?')"
+                                   title="Click to seal the project master key"
+                                   href="/admin/projects/{{ project.id }}/seal">
+                                    [unsealed]
+                                </a>
+                            </b>
                         {% endif %}
                     </td>
                     <td>
