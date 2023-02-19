@@ -1,6 +1,6 @@
 import time
 from flask import Blueprint, render_template, request, redirect, url_for, g, flash
-from sqlalchemy import text
+from sqlalchemy import text, or_
 from admin.session_util import master_key_session_set
 from db import session
 from models import Environment, Project
@@ -99,5 +99,9 @@ def set_project_master_key(project_id):
 def new():
     # retrieve all projects
     # without project_id, meaning it's a root project
-    projects = session.query(Project).filter_by(project_id=None).all()
+
+    projects = session.query(Project)\
+        .filter(or_(Project.project_id == '', Project.project_id == None))\
+        .all()
+
     return render_template('admin/projects/new.html', projects=projects)

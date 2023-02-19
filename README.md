@@ -86,7 +86,7 @@ subprocess.call('env > out.txt', shell=True)
 
 ### [DONE] show if master key unsealed
 
-### bug - list selectable projects in new is not correct
+### [DONE] bug - list selectable projects in new is not correct
 
 ### button to seal unsealed master key
 
