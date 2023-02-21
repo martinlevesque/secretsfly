@@ -121,7 +121,6 @@ class Secret(Base):
         return f"Secret(id={self.id}, project_id={self.project_id}, environment_id={self.environment_id}, " \
                f"name={self.name}, comment={self.comment}, value=XXX)"
 
-
     @property
     def serialize(self):
         return {
@@ -167,6 +166,16 @@ class Secret(Base):
             result.remove(element)
 
         return result
+
+    def find_missing_secrets(project_ids, current_environment_id):
+        # other environments where id different than current_environment_id:
+        other_environments = session.query(Environment) \
+            .filter(Environment.id != current_environment_id) \
+            .all()
+
+        return session.query(Secret) \
+            .filter(Secret.project_id.in_(project_ids)) \
+            .order_by(text('secrets.name DESC, secrets.id ASC')).all()
 
 
 @event.listens_for(Secret, 'before_insert')

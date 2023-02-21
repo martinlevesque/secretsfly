@@ -50,12 +50,7 @@ def index(project_id, environment_id):
 
     # filter by if project_id or g.project.project_id
     secrets = Secret.retrieve_hierarchy_secrets([project_id, g.project.project_id], environment_id)
-
-    all_secrets = session.query(Secret) \
-        .all()
-
-    for s in all_secrets:
-        print(f"secret: {s}")
+    other_environment_secrets = Secret.find_missing_secrets([project_id, g.project.project_id], environment_id)
 
     if g.with_decryption:
         Secret.decrypt_secrets(secrets, g.project_master_key)
@@ -71,6 +66,7 @@ def index(project_id, environment_id):
                            project=g.project,
                            environment=g.environment,
                            secrets=secrets,
+                           other_environment_secrets=other_environment_secrets,
                            with_decryption=g.with_decryption,
                            SECRET_DEFAULT_VALUE=SECRET_DEFAULT_VALUE,
                            NB_MINUTES_DECRYPTED_BEFORE_REDIRECT=NB_MINUTES_DECRYPTED_BEFORE_REDIRECT)
