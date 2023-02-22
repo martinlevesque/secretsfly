@@ -67,6 +67,7 @@ def index(project_id, environment_id):
                            environment=g.environment,
                            secrets=secrets,
                            other_environment_secrets=other_environment_secrets,
+                           other_environment_secrets_len=len(other_environment_secrets),
                            with_decryption=g.with_decryption,
                            SECRET_DEFAULT_VALUE=SECRET_DEFAULT_VALUE,
                            NB_MINUTES_DECRYPTED_BEFORE_REDIRECT=NB_MINUTES_DECRYPTED_BEFORE_REDIRECT)

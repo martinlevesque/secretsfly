@@ -168,14 +168,31 @@ class Secret(Base):
         return result
 
     def find_missing_secrets(project_ids, current_environment_id):
+        cur_env_secrets = Secret.retrieve_hierarchy_secrets(project_ids, current_environment_id)
+
         # other environments where id different than current_environment_id:
         other_environments = session.query(Environment) \
             .filter(Environment.id != current_environment_id) \
             .all()
 
-        return session.query(Secret) \
-            .filter(Secret.project_id.in_(project_ids)) \
-            .order_by(text('secrets.name DESC, secrets.id ASC')).all()
+        missing_secrets = {}
+
+        for environment in other_environments:
+            other_env_secrets = Secret.retrieve_hierarchy_secrets(project_ids, environment.id)
+
+            for secret in other_env_secrets:
+                if secret.name not in [s.name for s in cur_env_secrets]:
+                    if secret.name not in missing_secrets:
+                        missing_secrets[secret.name] = {
+                            'secret': secret,
+                            'environments': [environment],
+                            'environment_names': [environment.name],
+                        }
+                    else:
+                        missing_secrets[secret.name]['environments'].append(environment)
+                        missing_secrets[secret.name]['environment_names'].append(environment.name)
+
+        return missing_secrets
 
 
 @event.listens_for(Secret, 'before_insert')
