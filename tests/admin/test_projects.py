@@ -1,4 +1,6 @@
 import time
+import os
+import base64
 from freezegun import freeze_time
 from datetime import datetime
 from tests import util
@@ -16,6 +18,24 @@ def test_admin_projects_endpoint(client):
 
     util.assert_response_contains_html('Projects (0)', response)
 
+
+def test_admin_projects_with_admin_basic_auth_endpoint(client, monkeypatch):
+    username = 'admin'
+    password = 'password'
+    monkeypatch.setenv('ADMIN_BASIC_AUTH_USERNAME', username)
+    monkeypatch.setenv('ADMIN_BASIC_AUTH_PASSWORD', password)
+
+    response = client.get('/admin/projects/')
+
+    assert response.status_code == 401
+
+    # With proper basic auth credentials, should return 200 OK
+    auth_header_value = 'Basic ' + base64.b64encode(f'{username}:{password}'.encode('utf-8')).decode('utf-8')
+    headers = {'Authorization': auth_header_value}
+
+    response = client.get('/admin/projects/', headers=headers)
+
+    assert response.status_code == 200
 
 def test_admin_projects_endpoint_with_many(client):
     # generate master ket
