@@ -13,7 +13,6 @@ def test_admin_secrets_endpoint(client):
 
     secret_payload = {
         'name': 'test secret',
-
     }
     helpers.make_secret(project, environment, secret_payload)
 
@@ -22,6 +21,13 @@ def test_admin_secrets_endpoint(client):
     assert response.status_code == 200
     util.assert_response_contains_html(f"Secrets for", response)
     util.assert_response_contains_html(f"test secret", response)
+
+    # if we go to a different environment, we should see the secrets as importable
+
+    diff_environment = session.query(Environment).filter(Environment.id != environment.id).first()
+    response = client.get(f"/admin/projects/{project.id}/environments/{diff_environment.id}/secrets/")
+    util.assert_response_contains_html('<legend>Missing secrets</legend>', response)
+    util.assert_response_contains_html(f"{secret_payload['name']} (from environments: {environment.name})", response)
 
 
 def test_admin_secrets_with_parent_secrets_endpoint(client):
