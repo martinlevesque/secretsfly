@@ -16,12 +16,16 @@ def authenticate():
     )
 
 
+def admin_is_authenticated():
+    return os.environ.get('ADMIN_BASIC_AUTH_USERNAME') is not None
+
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         auth = request.authorization
 
-        if os.environ.get('ADMIN_BASIC_AUTH_USERNAME'):
+        if admin_is_authenticated():
             if not auth or not check_auth(auth.username, auth.password):
                 return authenticate()
 

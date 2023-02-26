@@ -127,6 +127,11 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 #### on local
 #### on fly
 
+### possible read master key?
+
+https://stackoverflow.com/questions/12977179/reading-living-process-memory-without-interrupting-it
+https://techryptic.github.io/2018/04/07/Using-PTRACE-to-Inspect-&-Alter-Memory/
+
 
 
 
