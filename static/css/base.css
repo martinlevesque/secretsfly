@@ -35,6 +35,10 @@ a:hover {
     color: var(--secretfly-color);
 }
 
+.pure-button:hover {
+    color: var(--black);
+}
+
 .pure-button-primary {
     background-color: #30ac43;
 }
@@ -55,4 +59,17 @@ a:hover {
   background-color: hsl(0, 70%, 80%);
   color: var(--black);
   /* Define styles for error class applied to li elements within flashes class */
+}
+
+.homepage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.homepage h1 {
+  font-size: 5em;
+  color: var(--secretfly-color);
 }

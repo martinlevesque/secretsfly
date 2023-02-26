@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 from api.status import bp as status_endpoints
 from api.secrets import bp as secrets_endpoints
 from admin.admin import bp as admin_endpoints
@@ -13,6 +13,12 @@ app.debug = True
 
 # app secret key is randomized at startup
 app.secret_key = encryption.generate_key_b64()
+
+# Homepage
+
+@app.route('/')
+def index():
+    return render_template('home.html')
 
 # API
 app.register_blueprint(status_endpoints)
