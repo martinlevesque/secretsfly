@@ -1,15 +1,58 @@
+:root {
+  --link-color: #ffffff;
+  --secretfly-color: #00dd23;
+  --black: #000000;
+}
+
+body {
+    background-color: #3f4245;
+    color: #fff;
+}
+
+.main {
+    margin: 10px;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #c8c8c8;
+    text-decoration: none;
+}
+
+.pure-menu-link {
+    color: var(--link-color);
+}
+
+.pure-menu-link:hover {
+    background-color: var(--black);
+}
+
+.pure-menu-item .home {
+    color: var(--secretfly-color);
+}
+
+.pure-button-primary {
+    background-color: #30ac43;
+}
 
 .flashes li.success {
   background-color: hsl(120, 70%, 85%);
+  color: var(--black);
   /* Define styles for success class applied to li elements within flashes class */
 }
 
 .flashes li.info {
   background-color: hsl(210, 70%, 80%);
+  color: var(--black);
   /* Define styles for info class applied to li elements within flashes class */
 }
 
 .flashes li.error {
   background-color: hsl(0, 70%, 80%);
+  color: var(--black);
   /* Define styles for error class applied to li elements within flashes class */
 }

@@ -117,9 +117,10 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 
 ### [DONE] parameter to protect the admin UI
 
-### improve base UI
+### [DONE] improve base UI
 
-### have home be the list of projects
+
+### have home
 
 ### (rotate) reencrypt feature (previous master key + new master key)
 

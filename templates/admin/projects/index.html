@@ -4,63 +4,64 @@
 
     <h1>Projects ({{ nb_projects }})</h1>
 
-    <div>
-        <a class="pure-button" href="/admin/projects/new">+</a>
-    </div>
+{% if new_master_key %}
+<div>
+    <p><strong>New master key generated for project {{ project.name }}. Make sure to back it up and keep it secret.</strong>
+        <input id="master_key_input"
+               type="password"
+               value="{{ new_master_key }}"
+               class="pure-input-1-2"
+               readonly />
+        <button onclick="copyTagContent('master_key_input')" class="pure-button">Copy master key</button>
+    </p>
+</div>
+{% endif %}
 
-    {% if new_master_key %}
+    <div class="main">
         <div>
-            <p><strong>New master key generated for project {{ project.name }}. Make sure to back it up and keep it secret.</strong>
-                <input id="master_key_input"
-                       type="password"
-                       value="{{ new_master_key }}"
-                       class="pure-input-1-2"
-                       readonly />
-                <button onclick="copyTagContent('master_key_input')" class="pure-button">Copy master key</button>
-            </p>
+            <a class="pure-button" href="/admin/projects/new">+</a>
         </div>
-    {% endif %}
-
-    <table class="pure-table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for project in projects %}
-
+        <table class="pure-table">
+            <thead>
                 <tr>
-                    <td>{{ project.id }}</td>
-                    <td>
-                        {% if project.project_id %}
-                            <span>
-                               &nbsp;&nbsp;&nbsp;&nbsp;
-                            </span>
-                        {% endif %}
-                        {{ project.name }}
-
-                        {% if not project.sealed %}
-                            <b>
-                                <a onclick="return confirm('Are you sure?')"
-                                   title="Click to seal the project master key"
-                                   href="/admin/projects/{{ project.id }}/seal">
-                                    [unsealed]
-                                </a>
-                            </b>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <ul>
-                            <li><a href="/admin/projects/{{ project.id }}/">View</a></li>
-                            <li><a href="/admin/projects/{{ project.id }}/service-tokens">Service Tokens</a></li>
-                        </ul>
-                    </td>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Actions</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for project in projects %}
+
+                    <tr>
+                        <td>{{ project.id }}</td>
+                        <td>
+                            {% if project.project_id %}
+                                <span>
+                                   &nbsp;&nbsp;&nbsp;&nbsp;
+                                </span>
+                            {% endif %}
+                            {{ project.name }}
+
+                            {% if not project.sealed %}
+                                <b>
+                                    <a onclick="return confirm('Are you sure?')"
+                                       title="Click to seal the project master key"
+                                       href="/admin/projects/{{ project.id }}/seal">
+                                        [unsealed]
+                                    </a>
+                                </b>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <ul>
+                                <li><a href="/admin/projects/{{ project.id }}/">View</a></li>
+                                <li><a href="/admin/projects/{{ project.id }}/service-tokens">Service Tokens</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 {% endblock %}

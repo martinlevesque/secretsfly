@@ -3,6 +3,7 @@ from models import ServiceToken
 from lib import master_keys
 from admin.auth import basic_auth
 
+
 def master_key_session_set(project):
     service_token = request.headers.get('authorization')
 
