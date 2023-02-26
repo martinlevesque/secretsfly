@@ -1,7 +1,7 @@
 from tests import util
 
 
-def test_homagepage(client):
+def test_homepage(client):
     response = client.get('/')
 
     assert response.status_code == 200
