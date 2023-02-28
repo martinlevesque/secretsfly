@@ -119,8 +119,7 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 
 ### [DONE] improve base UI
 
-
-### have home
+### [DONE] have home
 
 ### (rotate) reencrypt feature (previous master key + new master key)
 

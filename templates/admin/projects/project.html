@@ -25,6 +25,23 @@
     </form>
     {% endif %}
 
+    <div>
+        <hr />
+        <form class="pure-form pure-g" id="main-form-secrets" action="/admin/projects/{{ project.id }}/rotate"
+              method="post"
+              onsubmit="return confirm('Are you sure?');"
+              enctype="application/x-www-form-urlencoded">
+            <div class="pure-u-1-2">
+                <div class="l-box">
+                    <div class="pure-controls">
+                        <button type="submit" class="pure-button">Rotate Master Key</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <hr />
+    </div>
+
     <div class="pure-g">
 
         {% for environment in environments %}
