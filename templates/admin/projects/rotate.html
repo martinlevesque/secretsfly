@@ -1,0 +1,47 @@
+{% extends 'admin/layout.html' %}
+
+{% block body %}
+    <h1>Rotate Master Key for project {{ g.project.name }}</h1>
+
+    <div>
+        <strong>
+            Warning! The following operation will re-encrypt all secrets for this project using the new master key.<br />
+            Make sure to copy the new master key and keep it secret.<br />
+            Further, service tokens will be invalidated and will need to be re-created. The following page will
+            provide a list of service tokens that will be invalidated.
+        </strong>
+        <br />
+        <br />
+        <hr />
+    </div>
+
+    <form method="POST" class="pure-form pure-form-aligned" action="/admin/projects/{{ g.project.id }}/rotate">
+        <fieldset>
+            <div class="pure-control-group">
+                <label for="current-project-master-key">Current Project Master Key*</label>
+                <input type="password"
+                       name="current_master_key"
+                       class="pure-input-1-2"
+                       value="{{ current_master_key }}"
+                       id="current-project-master-key"
+                       placeholder="Current project master key" />
+            </div>
+
+            <div class="pure-control-group">
+                <label for="new-project-master-key">New Project Master Key*</label>
+                <input type="password"
+                       name="new_master_key"
+                       class="pure-input-1-2"
+                       id="new-project-master-key"
+                       value="{{ new_master_key }}"
+                       placeholder="" />
+                <button type="button" onclick="copyTagContent('new-project-master-key')" class="pure-button">Copy new master key</button>
+            </div>
+
+            <div class="pure-controls">
+                <button type="submit" class="pure-button pure-button-primary">Rotate</button>
+            </div>
+        </fieldset>
+    </form>
+
+{% endblock %}

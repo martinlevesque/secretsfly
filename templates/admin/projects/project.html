@@ -8,37 +8,26 @@
         <p>Project master key is not currently set, fill it below to keep it stored in the session.</p>
 
         <form method="POST" class="pure-form pure-form-aligned" action="/admin/projects/{{ project.id }}/set-master-key">
-        <fieldset>
-            <div class="pure-control-group">
-                <label for="project-master-key">Project master key *</label>
-                <input type="password"
-                       name="master_key_{{ project.id }}"
-                       class="pure-input-1-2"
-                       id="project-master-key"
-                       placeholder="Project master key" />
-            </div>
+            <fieldset>
+                <div class="pure-control-group">
+                    <label for="project-master-key">Project master key *</label>
+                    <input type="password"
+                           name="master_key_{{ project.id }}"
+                           class="pure-input-1-2"
+                           id="project-master-key"
+                           placeholder="Project master key" />
+                </div>
 
-            <div class="pure-controls">
-                <button type="submit" class="pure-button pure-button-primary">Store (unseal)</button>
-            </div>
-        </fieldset>
-    </form>
+                <div class="pure-controls">
+                    <button type="submit" class="pure-button pure-button-primary">Store (unseal)</button>
+                </div>
+            </fieldset>
+        </form>
     {% endif %}
 
     <div>
         <hr />
-        <form class="pure-form pure-g" id="main-form-secrets" action="/admin/projects/{{ project.id }}/rotate"
-              method="post"
-              onsubmit="return confirm('Are you sure?');"
-              enctype="application/x-www-form-urlencoded">
-            <div class="pure-u-1-2">
-                <div class="l-box">
-                    <div class="pure-controls">
-                        <button type="submit" class="pure-button">Rotate Master Key</button>
-                    </div>
-                </div>
-            </div>
-        </form>
+        <a class="pure-button" href="/admin/projects/{{ project.id }}/rotate">Rotate Master Key</a>
         <hr />
     </div>
 

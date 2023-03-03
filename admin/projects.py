@@ -1,12 +1,13 @@
 import time
 from flask import Blueprint, render_template, request, redirect, url_for, g, flash
 from sqlalchemy import text, or_
-from admin.session_util import master_key_session_set
+from admin.session_util import master_key_session_set, ensure_have_project_master_in_session
 from db import session
 from models import Environment, Project
 from admin.service_tokens import bp as service_tokens_endpoints
 from admin.secrets import bp as secrets_endpoints
 from lib import master_keys
+from lib import encryption
 
 bp = Blueprint('admin_projects', __name__, url_prefix='/projects/')
 
@@ -31,6 +32,13 @@ def before_request_load_project():
 
     if project_id:
         g.project = session.query(Project).filter_by(id=project_id).first()
+
+
+@bp.before_request
+def before_request_ensure_have_project_master_in_session():
+    # if request path ends with /rotate
+    if request.path.endswith('/rotate'):
+        return ensure_have_project_master_in_session()
 
 
 @bp.route('/', methods=['GET', 'POST'])
@@ -64,6 +72,28 @@ def mark_projects_seal_status(projects):
         project.sealed = master_keys.is_project_sealed(project)
 
     return projects
+
+
+@bp.route('/<project_id>/rotate', methods=['GET', 'POST'])
+def rotate(project_id):
+    ensure_have_project_master_in_session()
+    new_master_key = None
+    project = None
+
+    if request.method == 'POST':
+        pass
+        #project = Project(**request.form)
+
+        #session.add(project)
+        #session.commit()
+
+    elif request.method == 'GET':
+        new_master_key = encryption.generate_key_b64()
+
+    return render_template('admin/projects/rotate.html',
+                           project=project,
+                           current_master_key=master_keys.master_key_session_set(g.project)['key'],
+                           new_master_key=new_master_key)
 
 
 @bp.route('/<project_id>/', methods=['GET'])

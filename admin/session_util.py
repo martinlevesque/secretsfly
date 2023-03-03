@@ -1,4 +1,4 @@
-from flask import g, request, redirect, url_for
+from flask import g, request, redirect, url_for, flash
 from models import ServiceToken
 from lib import master_keys
 from admin.auth import basic_auth
@@ -18,4 +18,5 @@ def master_key_session_set(project):
 
 def ensure_have_project_master_in_session():
     if not master_key_session_set(g.project):
+        flash('You need to provide a master key to access this page', 'error')
         return redirect(url_for('admin.admin_projects.get_project', project_id=g.project.id))

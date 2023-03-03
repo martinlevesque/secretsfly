@@ -24,6 +24,7 @@ Don't let third party manage your secrets, keep them yourself and avoid the risk
 - Secrets are grouped per project and per environment.
 - Secrets follow a project hierarchy - secrets coming from inherited projects are also available to the child projects.
 - Cloud agnostic rather than multi-cloud support as opposed to Hashicorp Vault, and similar tools.
+- Ability to rotate the master key, and re-encrypt all secrets with a new master key.
 
 ##
 
@@ -122,8 +123,8 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 ### [DONE] have home
 
 ### (rotate) reencrypt feature (previous master key + new master key)
-   should do a get
-   generate a new master key and provide existing one
+   [DONE] should do a get
+   [DONE] generate a new master key and provide existing one
    reencrypt all secrets with new master key in TX
    list service tokens to regenerate
 
