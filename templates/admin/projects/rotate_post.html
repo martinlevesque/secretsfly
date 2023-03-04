@@ -1,0 +1,19 @@
+{% extends 'admin/layout.html' %}
+
+{% block body %}
+    <h1>Rotate Master Key for project {{ g.project.name }}</h1>
+
+    <div>
+        <h3>Service tokens that has been invalidated</h3>
+        <ul>
+            {% for service_token in service_tokens %}
+                <li>
+                    <a href="/admin/projects/{{ service_token.project_id }}/service-tokens/">
+                        {{ service_token.friendly_name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}

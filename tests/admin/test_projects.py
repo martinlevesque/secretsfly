@@ -4,8 +4,8 @@ import base64
 from freezegun import freeze_time
 from datetime import datetime
 from tests import util
+from models import Environment, Project, Secret
 from db import session
-from models import Environment, Project
 from tests.admin import helpers
 from lib import master_keys
 from lib import encryption
@@ -36,6 +36,7 @@ def test_admin_projects_with_admin_basic_auth_endpoint(client, monkeypatch):
     response = client.get('/admin/projects/', headers=headers)
 
     assert response.status_code == 200
+
 
 def test_admin_projects_endpoint_with_many(client):
     # generate master ket
@@ -120,3 +121,37 @@ def test_admin_set_project_master_key_with_invalid_master_key(client, monkeypatc
                            data={f"master_key_{new_project.id}": 'mymasterkey:invalid'})
 
     assert response.status_code == 400
+
+
+def test_admin_rotate_endpoint(client):
+    master_key = encryption.generate_key_b64()
+    project = helpers.make_project(client, "project rotate", master_key=master_key)
+
+    response = client.get(f"/admin/projects/{project.id}/rotate", data={'name': 'Test Project inv master key'})
+
+    assert response.status_code == 200
+    util.assert_response_contains_html('The following operation will re-encrypt', response)
+
+
+def test_admin_post_rotate_endpoint(client):
+    master_key = encryption.generate_key_b64()
+    new_master_key = encryption.generate_key_b64()
+    project = helpers.make_project(client, "project post rotate", master_key=master_key)
+    environment = helpers.first_environment()
+    secret = helpers.make_secret(project,
+                                 environment,
+                                 {'name': 'test secret'},
+                                 secret_value='value1',
+                                 master_key=master_key)
+
+    response = client.post(f"/admin/projects/{project.id}/rotate",
+                           data={'current_master_key': master_key, 'new_master_key': new_master_key})
+
+    assert response.status_code == 302
+
+    session.add(secret)
+    secret_loaded = session.query(Secret) \
+        .filter_by(id=secret.id) \
+        .first()
+
+    assert secret_loaded.decrypt_latest_value(new_master_key) == "value1"

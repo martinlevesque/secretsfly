@@ -122,13 +122,9 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 
 ### [DONE] have home
 
-### (rotate) reencrypt feature (previous master key + new master key)
-   [DONE] should do a get
-   [DONE] generate a new master key and provide existing one
-   reencrypt all secrets with new master key in TX
-   list service tokens to regenerate
+### [DONE] (rotate) reencrypt feature (previous master key + new master key)
 
-### ability delete service token
+### ability regenerate service token
 
 ### performance analysis (benchmark folder)
 #### on local

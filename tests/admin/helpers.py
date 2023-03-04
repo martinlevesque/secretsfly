@@ -46,3 +46,10 @@ def make_secret(project, environment, payload, secret_value=None, master_key=Non
         session.commit()
 
     return secret
+
+
+def first_environment(id=None):
+    if id is None:
+        id = 1
+
+    return session.query(Environment).filter_by(id=id).first()

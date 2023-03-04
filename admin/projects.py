@@ -112,9 +112,7 @@ def rotate(project_id):
         master_keys.set_master_key(project.id, new_master_key)
         flash('New master key has been set successfully', 'success')
 
-        service_tokens = session.query(ServiceToken) \
-            .filter(ServiceToken.project_id.in_(project_ids)) \
-            .all()
+        return redirect(url_for('admin.admin_projects.rotate_post', project_id=project_id))
 
     elif request.method == 'GET':
         new_master_key = encryption.generate_key_b64()
@@ -125,6 +123,21 @@ def rotate(project_id):
                            has_service_tokens=service_tokens is not None,
                            current_master_key=master_keys.master_key_session_set(g.project)['key'],
                            new_master_key=new_master_key)
+
+
+@bp.route('/<project_id>/rotate-post', methods=['GET'])
+def rotate_post(project_id):
+    project = g.project
+    project_ids = [project_id, project.project_id]
+
+    service_tokens = session.query(ServiceToken) \
+        .filter(ServiceToken.project_id.in_(project_ids)) \
+        .all()
+
+    return render_template('admin/projects/rotate_post.html',
+                           project=project,
+                           service_tokens=service_tokens,
+                           has_service_tokens=len(service_tokens) > 0)
 
 
 @bp.route('/<project_id>/', methods=['GET'])
