@@ -140,7 +140,12 @@ class Secret(Base):
         return encryption.encrypt(project_master_key, decrypted_value)
 
     def decrypt_latest_value(self, project_master_key):
-        return self.latest_value_history().decrypted_value(project_master_key)
+        latest_history = self.latest_value_history()
+
+        if not latest_history:
+            return None
+
+        return latest_history.decrypted_value(project_master_key)
 
     def decrypt_secrets(secrets, project_master_key):
         for secret in secrets:
@@ -149,11 +154,16 @@ class Secret(Base):
             if latest_secret_history_value:
                 secret.value = latest_secret_history_value.decrypted_value(project_master_key)
 
-    def retrieve_hierarchy_secrets(project_ids, environment_id):
-        result = session.query(Secret) \
+    def retrieve_hierarchy_secrets(project_ids, environment_id=None):
+        pre_filter = session.query(Secret) \
             .filter(Secret.project_id.in_(project_ids)) \
-            .filter_by(environment_id=environment_id) \
-            .order_by(text('secrets.name DESC, secrets.id ASC')).all()
+
+        if environment_id:
+            pre_filter = pre_filter.filter_by(environment_id=environment_id)
+
+        pre_filter = pre_filter.order_by(text('secrets.name DESC, secrets.id ASC'))
+
+        result = pre_filter.all()
 
         # remove parent variable if child one is present
         elements_to_remove = []

@@ -19,6 +19,7 @@ if os.environ.get('DB_FOLDER'):
 
 db_path = f"{db_location}secretsfly-{db_env}.db"
 
+
 def prepare_db():
     print(f"Initalizing with database with DB located at {db_path}")
 
@@ -38,4 +39,3 @@ engine = create_engine(DB_URL)
 Session = sessionmaker(bind=engine)
 
 session = scoped_session(Session)
-

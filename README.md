@@ -128,6 +128,8 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
    reencrypt all secrets with new master key in TX
    list service tokens to regenerate
 
+### ability delete service token
+
 ### performance analysis (benchmark folder)
 #### on local
 #### on fly

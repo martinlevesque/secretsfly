@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, g, fla
 from sqlalchemy import text, or_
 from admin.session_util import master_key_session_set, ensure_have_project_master_in_session
 from db import session
-from models import Environment, Project
+from models import Environment, Secret, SecretValueHistory, ServiceToken, Project
 from admin.service_tokens import bp as service_tokens_endpoints
 from admin.secrets import bp as secrets_endpoints
 from lib import master_keys
@@ -78,20 +78,51 @@ def mark_projects_seal_status(projects):
 def rotate(project_id):
     ensure_have_project_master_in_session()
     new_master_key = None
-    project = None
+    service_tokens = None
+    project = g.project
+    project_ids = [project_id, project.project_id]
 
     if request.method == 'POST':
-        pass
-        #project = Project(**request.form)
+        new_master_key = request.form['new_master_key']
+        current_master_key = request.form['current_master_key']
+        secrets = Secret.retrieve_hierarchy_secrets(project_ids)
 
-        #session.add(project)
-        #session.commit()
+        for secret in secrets:
+            latest_secret_value = secret.decrypt_latest_value(current_master_key)
+
+            if not latest_secret_value:
+                continue
+
+            for secret_value in secret.secret_history_values:
+                session.delete(secret_value)
+
+            # re-encrypt with new master key
+            encrypted_value_info = Secret.encrypt_value(new_master_key, latest_secret_value)
+
+            secret_value_history = SecretValueHistory(
+                secret_id=secret.id,
+                encrypted_value=encrypted_value_info['ciphered_data'],
+                iv_value=encrypted_value_info['iv'],
+                comment='')
+
+            session.add(secret_value_history)
+
+        session.commit()
+
+        master_keys.set_master_key(project.id, new_master_key)
+        flash('New master key has been set successfully', 'success')
+
+        service_tokens = session.query(ServiceToken) \
+            .filter(ServiceToken.project_id.in_(project_ids)) \
+            .all()
 
     elif request.method == 'GET':
         new_master_key = encryption.generate_key_b64()
 
     return render_template('admin/projects/rotate.html',
                            project=project,
+                           service_tokens=service_tokens,
+                           has_service_tokens=service_tokens is not None,
                            current_master_key=master_keys.master_key_session_set(g.project)['key'],
                            new_master_key=new_master_key)
 

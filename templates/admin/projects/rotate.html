@@ -15,33 +15,48 @@
         <hr />
     </div>
 
-    <form method="POST" class="pure-form pure-form-aligned" action="/admin/projects/{{ g.project.id }}/rotate">
-        <fieldset>
-            <div class="pure-control-group">
-                <label for="current-project-master-key">Current Project Master Key*</label>
-                <input type="password"
-                       name="current_master_key"
-                       class="pure-input-1-2"
-                       value="{{ current_master_key }}"
-                       id="current-project-master-key"
-                       placeholder="Current project master key" />
-            </div>
+    {% if has_service_tokens %}
+        <div>
+            <h3>Service tokens that has been invalidated</h3>
+            <ul>
+                {% for service_token in service_tokens %}
+                    <li>
+                        <a href="/admin/projects/{{ service_token.project_id }}/service-tokens/">
+                            {{ service_token.friendly_name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <form method="POST" class="pure-form pure-form-aligned" action="/admin/projects/{{ g.project.id }}/rotate">
+            <fieldset>
+                <div class="pure-control-group">
+                    <label for="current-project-master-key">Current Project Master Key*</label>
+                    <input type="password"
+                           name="current_master_key"
+                           class="pure-input-1-2"
+                           value="{{ current_master_key }}"
+                           id="current-project-master-key"
+                           placeholder="Current project master key" />
+                </div>
 
-            <div class="pure-control-group">
-                <label for="new-project-master-key">New Project Master Key*</label>
-                <input type="password"
-                       name="new_master_key"
-                       class="pure-input-1-2"
-                       id="new-project-master-key"
-                       value="{{ new_master_key }}"
-                       placeholder="" />
-                <button type="button" onclick="copyTagContent('new-project-master-key')" class="pure-button">Copy new master key</button>
-            </div>
+                <div class="pure-control-group">
+                    <label for="new-project-master-key">New Project Master Key*</label>
+                    <input type="password"
+                           name="new_master_key"
+                           class="pure-input-1-2"
+                           id="new-project-master-key"
+                           value="{{ new_master_key }}"
+                           placeholder="" />
+                    <button type="button" onclick="copyTagContent('new-project-master-key')" class="pure-button">Copy new master key</button>
+                </div>
 
-            <div class="pure-controls">
-                <button type="submit" class="pure-button pure-button-primary">Rotate</button>
-            </div>
-        </fieldset>
-    </form>
+                <div class="pure-controls">
+                    <button type="submit" class="pure-button pure-button-primary">Rotate</button>
+                </div>
+            </fieldset>
+        </form>
+    {% endif %}
 
 {% endblock %}
