@@ -124,7 +124,9 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 
 ### [DONE] (rotate) reencrypt feature (previous master key + new master key)
 
-### ability regenerate service token
+### [DONE] ability regenerate service token
+
+### have auto ssl (caddy?)
 
 ### performance analysis (benchmark folder)
 #### on local

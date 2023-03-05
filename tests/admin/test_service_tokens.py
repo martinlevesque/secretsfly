@@ -4,7 +4,7 @@ from tests import util
 from db import session
 from models import Environment, ServiceToken, Project, PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR
 from lib import encryption
-from tests.admin.helpers import make_project, make_service_token
+from tests.admin.helpers import make_project, make_service_token, first_environment
 
 
 def test_admin_service_tokens_endpoint(client):
@@ -31,6 +31,33 @@ def test_admin_service_tokens_endpoint(client):
     util.assert_response_contains_html(f"Service Tokens for project Test Project 5", response)
     util.assert_response_contains_html(friendly_name, response)
     util.assert_response_contains_html(environment.name, response)
+
+
+def test_admin_service_tokens_destroy_endpoint(client):
+    # delete all service tokens
+    session.query(ServiceToken).delete()
+
+    # make a project
+    project = make_project(client, "Test Project destroy ST", "my-master-key")
+
+    # make a service token
+    friendly_name = 'ST test listing'
+    make_service_token(client, project, {
+        'friendly_name': friendly_name,
+        'environment_id': first_environment().id,
+        'rights': 'read'
+    })
+    # last service token
+    service_token = session.query(ServiceToken).order_by(ServiceToken.id.desc()).first()
+
+    # find environment 1
+    environment = session.query(Environment).filter(Environment.id == 1).first()
+
+    response = client.post(f"/admin/projects/{project.id}/service-tokens/{service_token.id}/destroy")
+
+    assert response.status_code == 302
+    service_token = session.query(ServiceToken).filter(ServiceToken.id == service_token.id).first()
+    assert not service_token
 
 
 def test_admin_service_tokens_new_endpoint(client):
