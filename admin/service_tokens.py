@@ -44,6 +44,15 @@ def index(project_id):
                            new_public_service_token=new_public_service_token)
 
 
+@bp.route('/<project_id>/service-tokens/<service_token_id>/destroy', methods=['POST'])
+def destroy(project_id, service_token_id):
+    service_token = session.query(ServiceToken).filter_by(id=service_token_id).first()
+    session.delete(service_token)
+    session.commit()
+
+    return redirect(url_for('admin.admin_projects.admin_service_tokens.index', project_id=project_id))
+
+
 @bp.route('/<project_id>/service-tokens/new', methods=['GET'])
 def new(project_id):
     # available environment from db session:

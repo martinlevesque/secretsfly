@@ -11,8 +11,10 @@
     {% if new_public_service_token %}
     <div>
         <p><strong>New service token generated for project {{ project.name }}. Make sure to back it up and keep it secret.</strong>
-            <input id="service_token_input" type="password" value="{{ new_public_service_token }}" class="pure-input-1-2" readonly />
-            <button onclick="copyTagContent('service_token_input')" class="pure-button">Copy Service Token</button>
+            <form class="pure-form pure-form-aligned">
+                <input id="service_token_input" type="password" value="{{ new_public_service_token }}" class="pure-input-1-2" readonly />
+                <button onclick="copyTagContent('service_token_input')" class="pure-button" type="button">Copy Service Token</button>
+            </form>
         </p>
     </div>
     {% endif %}
@@ -35,6 +37,11 @@
                 <td>{{ service_token.environment.name }}</td>
                 <td>
                     <ul>
+                        <li>
+                            <form method="post" action="/admin/projects/{{ project.id }}/service-tokens/{{ service_token.id }}/destroy">
+                                <button onclick="return confirm('Are you sure?')" class="pure-button" type="submit">Delete</button>
+                            </form>
+                        </li>
                     </ul>
                 </td>
             </tr>
