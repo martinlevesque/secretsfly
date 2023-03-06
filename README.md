@@ -26,6 +26,14 @@ Don't let third party manage your secrets, keep them yourself and avoid the risk
 - Cloud agnostic rather than multi-cloud support as opposed to Hashicorp Vault, and similar tools.
 - Ability to rotate the master key, and re-encrypt all secrets with a new master key.
 
+## Installation
+
+### SSL
+
+```
+openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365
+```
+
 ##
 
 https://keystone.sh/docs/guides/use-secrets-in-your-project/

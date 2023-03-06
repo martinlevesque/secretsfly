@@ -1,0 +1,20 @@
+version: "3"
+services:
+  secretsfly:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint:
+      - flask
+      - run
+      - --host=0.0.0.0
+      - --cert=cert.pem
+      - --key=key.pem
+    env_file:
+      - .env
+    environment:
+      FLASK_APP: ./app.py
+    network_mode: host
+    volumes:
+      - ./db:/app/db
