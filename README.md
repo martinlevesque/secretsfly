@@ -134,7 +134,9 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 
 ### [DONE] ability regenerate service token
 
-### have auto ssl (caddy?)
+### [DONE] cert_file='/path/to/cert_file' cli
+
+### cli sample to use to load secrets from container image
 
 ### performance analysis (benchmark folder)
 #### on local

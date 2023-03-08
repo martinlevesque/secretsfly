@@ -1,0 +1,11 @@
+version: "3"
+services:
+  myservice:
+    network_mode: host
+    environment:
+      - SECRETSFLY_TOKEN=xxx
+      - SECRETSFLY_UNSAFE_SSL_CERT=true
+      - SECRETSFLY_API_BASE_URL=https://localhost:4430/api
+    build:
+      context: .
+      dockerfile: Dockerfile

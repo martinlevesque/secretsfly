@@ -6,6 +6,5 @@ db/secretsfly-dev.db
 db/secretsfly-test.db
 db/secretsfly-production.db
 
-cert.pem
-key.pem
+certs/
 .env

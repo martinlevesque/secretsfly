@@ -9,16 +9,18 @@ from db import session, prepare_db
 
 app = Flask(__name__)
 
-app.debug = True
+app.config['ENV'] = os.environ.get('ENV', 'dev')
 
 # app secret key is randomized at startup
 app.secret_key = encryption.generate_key_b64()
+
 
 # Homepage
 
 @app.route('/')
 def index():
     return render_template('home.html')
+
 
 # API
 app.register_blueprint(status_endpoints)
@@ -44,6 +46,7 @@ for env in AVAILABLE_ENVIRONMENTS:
         # create env
         session.add(Environment(name=env))
         session.commit()
+
 
 # end of global environments
 

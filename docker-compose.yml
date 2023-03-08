@@ -6,14 +6,15 @@ services:
       context: .
       dockerfile: Dockerfile
     entrypoint:
-      - flask
-      - run
-      - --host=0.0.0.0
-      - --cert=cert.pem
-      - --key=key.pem
+      - gunicorn
+      - app:app
+      - --log-level=DEBUG
+      - --bind=0.0.0.0:4430
     env_file:
       - .env
     environment:
+      GUNICORN_CMD_ARGS: --certfile /app/certs/cert.pem --keyfile /app/certs/key.pem
+      ENV: production
       FLASK_APP: ./app.py
     network_mode: host
     volumes:
