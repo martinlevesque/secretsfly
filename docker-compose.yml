@@ -13,7 +13,8 @@ services:
     env_file:
       - .env
     environment:
-      GUNICORN_CMD_ARGS: --certfile /app/certs/cert.pem --keyfile /app/certs/key.pem
+      WEB_CONCURRENCY: 1
+      #GUNICORN_CMD_ARGS: --certfile /app/certs/cert.pem --keyfile /app/certs/key.pem
       ENV: production
       FLASK_APP: ./app.py
     network_mode: host
