@@ -61,4 +61,5 @@ def check_for_expired_master_key():
         encrypted_master_keys = mutated_master_keys
 
 
-Thread(target=cron_check_master_keys_expiration).start()
+if os.environ.get('ENV') != 'test':
+    Thread(target=cron_check_master_keys_expiration).start()
