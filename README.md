@@ -136,11 +136,13 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 
 ### [DONE] cert_file='/path/to/cert_file' cli
 
-### cli sample to use to load secrets from container image
+### [DONE] cli sample to use to load secrets from container image
 
 ### performance analysis (benchmark folder)
 #### on local
 #### on fly
+
+### create indexes for foreign keys
 
 ### possible read master key?
 

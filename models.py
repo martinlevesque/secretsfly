@@ -1,6 +1,6 @@
 from datetime import datetime
 from base64 import b64encode, b64decode
-from sqlalchemy import create_engine, Column, event, DateTime, Integer, String, ForeignKey, text
+from sqlalchemy import create_engine, Column, event, DateTime, Integer, String, ForeignKey, text, func, and_
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from lib import encryption
@@ -136,6 +136,21 @@ class Secret(Base):
             .order_by(SecretValueHistory.id.desc()) \
             .first()
 
+    def latest_value_histories(secret_ids):
+        subquery = session.query(
+            SecretValueHistory.secret_id,
+            func.max(SecretValueHistory.id).label("max_id")
+        ).filter(SecretValueHistory.secret_id.in_(secret_ids)) \
+            .group_by(SecretValueHistory.secret_id).subquery()
+
+        return session.query(SecretValueHistory).join(
+            subquery,
+            and_(
+                SecretValueHistory.secret_id == subquery.c.secret_id,
+                SecretValueHistory.id == subquery.c.max_id
+            )
+        ).all()
+
     def encrypt_value(project_master_key, decrypted_value):
         return encryption.encrypt(project_master_key, decrypted_value)
 
@@ -148,15 +163,25 @@ class Secret(Base):
         return latest_history.decrypted_value(project_master_key)
 
     def decrypt_secrets(secrets, project_master_key):
+
+        secret_ids = [secret.id for secret in secrets]
+
+        secret_value_histories = Secret.latest_value_histories(secret_ids)
+        secret_value_secret_id_hash = {
+            secret_value_history.secret_id: secret_value_history
+            for secret_value_history
+            in secret_value_histories
+        }
+
         for secret in secrets:
-            latest_secret_history_value = secret.latest_value_history()
+            latest_secret_history_value = secret_value_secret_id_hash.get(secret.id)
 
             if latest_secret_history_value:
                 secret.value = latest_secret_history_value.decrypted_value(project_master_key)
 
     def retrieve_hierarchy_secrets(project_ids, environment_id=None):
         pre_filter = session.query(Secret) \
-            .filter(Secret.project_id.in_(project_ids)) \
+            .filter(Secret.project_id.in_(project_ids))
 
         if environment_id:
             pre_filter = pre_filter.filter_by(environment_id=environment_id)

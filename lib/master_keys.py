@@ -13,8 +13,6 @@ def cron_check_master_keys_expiration():
         time.sleep(30)
 
 
-
-
 def master_key_session_set(project):
     global encrypted_master_keys
 
@@ -61,5 +59,6 @@ def check_for_expired_master_key():
 
     if changed:
         encrypted_master_keys = mutated_master_keys
+
 
 Thread(target=cron_check_master_keys_expiration).start()

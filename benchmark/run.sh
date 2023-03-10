@@ -5,4 +5,4 @@ export SECRETSFLY_UNSAFE_SSL_CERT=true
 
 # Run the benchmark
 
-ab -H "Authorization: $SECRETSFLY_TOKEN" -c 10 -n 10000 $SECRETSFLY_API_BASE_URL/secrets/
+ab -H "Authorization: $SECRETSFLY_TOKEN" -c 500 -n 1000 $SECRETSFLY_API_BASE_URL/secrets/
