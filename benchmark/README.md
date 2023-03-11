@@ -15,8 +15,8 @@ The following results are obtained on a local laptop machine 4.2 GHz i5-1135G7 (
 ### with concurrency = 10
 
 
-| Concurrency (ab) | Requests per second | Latency (ms) |
-|:-----------------|:-------------------:|-------------:|
-| # secrets = 0    |       397.29        |       25.170 |
-| # secrets = 25   |        92.20        |      108.465 |
-| # secrets = 50   |        50.82        |      196.782 |
+| # secrets | Requests per second | Latency (ms) |
+|:----------|:-------------------:|-------------:|
+| 0         |       397.29        |       25.170 |
+| 25        |        92.20        |      108.465 |
+| 50        |        50.82        |      196.782 |
