@@ -1,6 +1,6 @@
 from datetime import datetime
 from base64 import b64encode, b64decode
-from sqlalchemy import create_engine, Column, event, DateTime, Integer, String, ForeignKey, text, func, and_
+from sqlalchemy import create_engine, Column, event, DateTime, Integer, String, ForeignKey, text, func, and_, Index
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from lib import encryption
@@ -15,7 +15,7 @@ class Project(Base):
     __tablename__ = 'projects'
 
     id = Column(Integer, primary_key=True)
-    project_id = Column(Integer, nullable=True)
+    project_id = Column(Integer, index=True, nullable=True)
     name = Column(String, nullable=False)
     description = Column(String)
 
@@ -58,8 +58,12 @@ class ServiceToken(Base):
     project_id = Column(Integer, ForeignKey(Project.id), nullable=False)
     environment_id = Column(Integer, ForeignKey(Environment.id), nullable=False)
     friendly_name = Column(String)
-    token = Column(String, nullable=False)  # sha-256 hash of the service token
+    token = Column(String, index=True, nullable=False)  # sha-256 hash of the service token
     rights = Column(String, nullable=False, default=SERVICE_RIGHT_READ)  # comma-separated list of rights: read,write
+
+    __table_args__ = (
+        Index('idx_service_tokens_project_id_environment_id', project_id, environment_id),
+    )
 
     def __str__(self):
         return f"ServiceToken(id={self.id}, project_id={self.project_id}, environment_id={self.environment_id}, " \
@@ -116,6 +120,10 @@ class Secret(Base):
     secret_history_values = relationship('SecretValueHistory', back_populates='secret')
 
     loaded_project_master_key = None
+
+    __table_args__ = (
+        Index('idx_secrets_project_id_environment_id', project_id, environment_id),
+    )
 
     def __str__(self):
         return f"Secret(id={self.id}, project_id={self.project_id}, environment_id={self.environment_id}, " \
@@ -240,7 +248,7 @@ class SecretValueHistory(Base):
     __tablename__ = 'secret_value_histories'
 
     id = Column(Integer, primary_key=True)
-    secret_id = Column(Integer, ForeignKey(Secret.id), nullable=False)
+    secret_id = Column(Integer, ForeignKey(Secret.id), index=True, nullable=False)
     encrypted_value = Column(String, nullable=False)
     iv_value = Column(String, nullable=False)
     comment = Column(String, nullable=False)
