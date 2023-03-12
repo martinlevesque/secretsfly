@@ -31,7 +31,7 @@ def before_request_check_format():
 ### Endpoints
 
 SECRET_DEFAULT_VALUE = '--------'
-NB_MINUTES_DECRYPTED_BEFORE_REDIRECT = int(os.environ.get('NB_MINUTES_DECRYPTED_BEFORE_REDIRECT', 5))
+ADMIN_UI_DECRYPTED_SECRETS_EXPIRATION = int(os.environ.get('ADMIN_UI_DECRYPTED_SECRETS_EXPIRATION', 5))
 
 
 def load_master_key():
@@ -70,7 +70,7 @@ def index(project_id, environment_id):
                            other_environment_secrets_len=len(other_environment_secrets),
                            with_decryption=g.with_decryption,
                            SECRET_DEFAULT_VALUE=SECRET_DEFAULT_VALUE,
-                           NB_MINUTES_DECRYPTED_BEFORE_REDIRECT=NB_MINUTES_DECRYPTED_BEFORE_REDIRECT)
+                           ADMIN_UI_DECRYPTED_SECRETS_EXPIRATION=ADMIN_UI_DECRYPTED_SECRETS_EXPIRATION)
 
 
 @bp.route('/<project_id>/environments/<environment_id>/secrets/<secret_id>/destroy/', methods=['POST'])
