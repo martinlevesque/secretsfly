@@ -1,6 +1,13 @@
 from db import session
 from tests import util
-from models import Environment, Secret, ServiceToken, Project, PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR
+
+from models.environment import Environment
+from models.service_token import ServiceToken
+from models.project import Project
+from models.secret import Secret
+from models.common import PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR
+
+
 from lib import encryption
 from tests.admin import helpers
 

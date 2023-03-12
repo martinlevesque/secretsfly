@@ -3,7 +3,9 @@ from flask import Blueprint, render_template, request, redirect, url_for, g, fla
 from sqlalchemy import text, or_
 from admin.session_util import master_key_session_set, ensure_have_project_master_in_session
 from db import session
-from models import Environment, Secret, SecretValueHistory, ServiceToken, Project
+
+from models import Environment, Project, Secret, SecretValueHistory
+
 from admin.service_tokens import bp as service_tokens_endpoints
 from admin.secrets import bp as secrets_endpoints
 from lib import master_keys

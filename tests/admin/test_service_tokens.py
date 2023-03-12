@@ -2,7 +2,12 @@ import re
 import base64
 from tests import util
 from db import session
-from models import Environment, ServiceToken, Project, PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR
+
+from models.environment import Environment
+from models.service_token import ServiceToken
+from models.project import Project
+from models.common import PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR
+
 from lib import encryption
 from tests.admin.helpers import make_project, make_service_token, first_environment
 

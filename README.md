@@ -144,7 +144,7 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 
 ### [DONE] create indexes for foreign keys
 
-### refactor models into folder
+### [DONE] refactor models into folder
 
 ### possible read master key?
 

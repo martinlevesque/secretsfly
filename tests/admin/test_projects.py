@@ -4,7 +4,9 @@ import base64
 from freezegun import freeze_time
 from datetime import datetime
 from tests import util
-from models import Environment, Project, Secret
+from models.environment import Environment
+from models.project import Project
+from models.secret import Secret
 from db import session
 from tests.admin import helpers
 from lib import master_keys

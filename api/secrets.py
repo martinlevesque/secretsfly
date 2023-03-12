@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request
 from db import session
-from models import Project, Secret, ServiceToken
+from models.project import Project
+from models.secret import Secret
+from models.service_token import ServiceToken
 from lib.log import logger
 from functools import lru_cache
 import time

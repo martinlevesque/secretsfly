@@ -1,7 +1,10 @@
 import re
 import json
 from db import session
-from models import Environment, ServiceToken
+
+from models.environment import Environment
+from models.service_token import ServiceToken
+
 from lib import encryption
 from tests.admin import helpers
 

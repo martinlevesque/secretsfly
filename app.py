@@ -4,7 +4,7 @@ from api.status import bp as status_endpoints
 from api.secrets import bp as secrets_endpoints
 from admin.admin import bp as admin_endpoints
 from lib import encryption
-from models import Environment
+from models.environment import Environment
 from db import session, prepare_db
 
 app = Flask(__name__)

@@ -1,6 +1,6 @@
 from flask import Blueprint
 from db import session
-from models import Project
+from models.project import Project
 from lib.log import logger
 
 STATUS_UP = 'up'
