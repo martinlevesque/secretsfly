@@ -146,6 +146,10 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 
 ### [DONE] refactor models into folder
 
+### issue when adding (+) multiple secrets
+
+### issues when deleting not yet saved secrets
+
 ### possible read master key?
 
 https://stackoverflow.com/questions/12977179/reading-living-process-memory-without-interrupting-it
