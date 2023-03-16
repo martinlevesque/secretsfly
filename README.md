@@ -150,7 +150,7 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 
 ### [DONE] issue when adding (+) multiple secrets
 
-### issues when deleting not yet saved secrets
+### [DONE] issues when deleting not yet saved secrets
 
 ### possible read master key?
 

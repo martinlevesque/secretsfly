@@ -1,6 +1,6 @@
 import time
 import os
-from flask import Blueprint, render_template, request, redirect, url_for, g, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, g, jsonify, flash
 from sqlalchemy import text
 from admin.session_util import master_key_session_set, ensure_have_project_master_in_session
 from db import session
@@ -47,6 +47,7 @@ def index(project_id, environment_id):
     if request.method == 'POST':
         secrets = secrets_from_form(request.form)
         upsert_secrets(project_id, environment_id, secrets)
+        flash('Secrets updated successfully', 'success')
 
     # filter by if project_id or g.project.project_id
     secrets = Secret.retrieve_hierarchy_secrets([project_id, g.project.project_id], environment_id)
