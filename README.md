@@ -146,7 +146,7 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 
 ### [DONE] refactor models into folder
 
-### catch unable to decrypt
+### [DONE] verify master key on load (try decrypt first one)
 
 ### [DONE] issue when adding (+) multiple secrets
 

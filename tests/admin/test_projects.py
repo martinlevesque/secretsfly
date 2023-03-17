@@ -97,6 +97,38 @@ def test_admin_set_project_master_key_endpoint(client, monkeypatch):
             util.assert_response_contains_html(environment.name, response)
 
 
+def test_admin_set_invalid_project_master_key_endpoint(client):
+    client.post('/admin/projects/', data={'name': 'Test Project invalid master key'})
+    new_project = session.query(Project).order_by(Project.id.desc()).first()
+    master_key = encryption.generate_key_b64()
+
+    response = client.post(f"/admin/projects/{new_project.id}/set-master-key",
+                           data={f"master_key_{new_project.id}": master_key})
+
+    assert response.status_code == 302
+
+    helpers.make_secret(new_project,
+                        helpers.first_environment(),
+                        {'name': 'test secret'},
+                        secret_value='value1',
+                        master_key=master_key)
+
+    master_key_2 = encryption.generate_key_b64()
+
+    response = client.post(f"/admin/projects/{new_project.id}/set-master-key",
+                           data={f"master_key_{new_project.id}": master_key_2})
+
+    assert response.status_code == 302
+
+    redirected_page = client.get(response.headers['Location'])
+
+    util.assert_response_contains_html("Master key is invalid", redirected_page)
+
+    assert master_keys.master_key_session_set(new_project)['key'] == master_key
+
+
+
+
 def test_admin_seal_project_master_key_endpoint(client, monkeypatch):
     client.post('/admin/projects/', data={'name': 'Test Project seal'})
     new_project = session.query(Project).order_by(Project.id.desc()).first()

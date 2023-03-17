@@ -165,6 +165,12 @@ def set_project_master_key(project_id):
     if not Project.master_key_format_valid(master_key):
         return {"error": "Invalid master key format"}, 400
 
+    first_project_secret = session.query(Secret).filter_by(project_id=project_id).first()
+
+    if not project.master_key_valid(master_key, first_project_secret):
+        flash('Master key is invalid', 'error')
+        return redirect(url_for('admin.admin_projects.get_project', project_id=project_id))
+
     master_keys.set_master_key(project.id, master_key)
     flash('Master key has been set successfully', 'success')
 

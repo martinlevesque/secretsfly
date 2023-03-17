@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from models.common import *
 from lib import encryption
+from lib.log import logger
 from db import session
 
 
@@ -19,6 +20,19 @@ class Project(Base):
 
     def master_key_format_valid(master_key):
         return master_key and PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR not in master_key
+
+
+    def master_key_valid(self, master_key, first_project_secret):
+        if not first_project_secret:
+            return True
+
+        try:
+            first_project_secret.decrypt_latest_value(master_key)
+        except Exception as e:
+            logger.error(f"master key invalid for project {self.id}: {e}")
+            return False
+
+        return True
 
     def generate_master_key(self):
         if self.is_root_project():
