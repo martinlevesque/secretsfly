@@ -74,7 +74,8 @@ def test_admin_service_tokens_new_endpoint(client):
 
 
 def test_admin_create_service_token_endpoint(client):
-    project = make_project(client, "Test Project create service token", "my-master-key")
+    master_key = encryption.generate_key_b64()
+    project = make_project(client, "Test Project create service token", master_key)
     response = make_service_token(client, project, {
         'friendly_name': 'ST 1',
         'environment_id': 1,
@@ -97,7 +98,7 @@ def test_admin_create_service_token_endpoint(client):
     parts = unbase64_service_token.split(PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR)
 
     assert len(parts) == 2
-    assert parts[0] == "my-master-key"
+    assert parts[0] == master_key
 
     stored_service_token = encryption.hash_string_sha256(parts[1])
 

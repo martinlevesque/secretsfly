@@ -80,11 +80,13 @@ def test_admin_set_project_master_key_endpoint(client, monkeypatch):
         client.post('/admin/projects/', data={'name': 'Test Project 3'})
         new_project = session.query(Project).order_by(Project.id.desc()).first()
 
+        master_key = encryption.generate_key_b64()
+
         response = client.post(f"/admin/projects/{new_project.id}/set-master-key",
-                               data={f"master_key_{new_project.id}": 'my-master-key'})
+                               data={f"master_key_{new_project.id}": master_key})
 
         assert response.status_code == 302
-        assert master_keys.master_key_session_set(new_project)['key'] == 'my-master-key'
+        assert master_keys.master_key_session_set(new_project)['key'] == master_key
 
         response = client.get(f"/admin/projects/{new_project.id}/")
 
@@ -95,6 +97,31 @@ def test_admin_set_project_master_key_endpoint(client, monkeypatch):
 
         for environment in environments:
             util.assert_response_contains_html(environment.name, response)
+
+
+def test_admin_set_project_master_key_with_human_password_endpoint(client):
+    client.post('/admin/projects/', data={'name': 'Test Project human pw'})
+    new_project = session.query(Project).order_by(Project.id.desc()).first()
+
+    master_key = "HelloWorld"
+
+    response = client.post(f"/admin/projects/{new_project.id}/set-master-key",
+                           data={f"master_key_{new_project.id}": master_key})
+
+    assert response.status_code == 302
+
+    actual_master_key = master_keys.master_key_session_set(new_project)['key']
+
+    helpers.make_secret(new_project,
+                        helpers.first_environment(),
+                        {'name': 'test secret'},
+                        secret_value='value2',
+                        master_key=actual_master_key)
+
+    response = client.post(f"/admin/projects/{new_project.id}/set-master-key",
+                           data={f"master_key_{new_project.id}": master_key})
+
+    assert response.status_code == 302
 
 
 def test_admin_set_invalid_project_master_key_endpoint(client):

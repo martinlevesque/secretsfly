@@ -1,4 +1,5 @@
 import time
+import base64
 from flask import Blueprint, render_template, request, redirect, url_for, g, flash
 from sqlalchemy import text, or_
 from admin.session_util import master_key_session_set, ensure_have_project_master_in_session
@@ -164,6 +165,13 @@ def set_project_master_key(project_id):
 
     if not Project.master_key_format_valid(master_key):
         return {"error": "Invalid master key format"}, 400
+
+    if not encryption.is_base64(master_key) or len(master_key) < encryption.KEY_LENGTH:
+        if encryption.KEY_LENGTH - len(master_key) < encryption.KEY_LENGTH:
+            missing_padding = encryption.KEY_LENGTH - len(master_key)
+            master_key = base64.b64encode(
+                bytes(master_key + (encryption.KEY_PADDING * missing_padding), 'utf-8')
+            ).decode('utf-8')
 
     first_project_secret = session.query(Secret).filter_by(project_id=project_id).first()
 

@@ -4,11 +4,25 @@ from Crypto.Util.Padding import pad, unpad
 from base64 import b64encode, b64decode
 import hashlib
 
+KEY_LENGTH = 32
+KEY_PADDING = '='
+
 
 def generate_key_b64():
     # AES 256 bits
-    orig_key = get_random_bytes(32)
+    orig_key = get_random_bytes(KEY_LENGTH)
     return b64encode(orig_key).decode('utf-8')
+
+
+def is_base64(s):
+    try:
+        if not s:
+            return False
+
+        b64decode(s)
+        return True
+    except Exception:
+        return False
 
 
 def hash_string_sha256(string):
