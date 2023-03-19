@@ -3,7 +3,10 @@ import copy
 import os
 from threading import Thread
 from lib.log import logger
+from lib import encryption
 
+base_master_key = encryption.generate_key_b64()
+print(f"Base master key: {base_master_key}")
 encrypted_master_keys = {}  # project_id -> { 'key': '...', 'set_at': 1234567890 }
 
 
@@ -15,8 +18,23 @@ def cron_check_master_keys_expiration():
 
 def master_key_session_set(project):
     global encrypted_master_keys
+    global base_master_key
 
-    return encrypted_master_keys.get(str(project.id))
+    encrypted_master_key_info = copy.deepcopy(encrypted_master_keys.get(str(project.id)))
+
+    if not encrypted_master_key_info:
+        return None
+
+    encrypted_master_key = encrypted_master_key_info.get('key')
+
+    # just replace the original key object by the actual key
+    encrypted_master_key_info['key'] = encryption.decrypt(
+        base_master_key,
+        encrypted_master_key['ciphered_data'],
+        encrypted_master_key['iv']
+    )
+
+    return encrypted_master_key_info
 
 
 def is_project_sealed(project):
@@ -31,11 +49,15 @@ def delete_master_key(project_id):
 
 def set_master_key(project_id, master_key):
     global encrypted_master_keys
+    global base_master_key
 
+    encrypted_master_key = encryption.encrypt(base_master_key, master_key)
     encrypted_master_keys[str(project_id)] = {
-        'key': master_key,
+        'key': encrypted_master_key,
         'set_at': int(time.time())
     }
+
+    return encrypted_master_key
 
 
 def check_for_expired_master_key():
