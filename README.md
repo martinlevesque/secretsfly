@@ -82,6 +82,8 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 
 ## todo
 
-### better display tables
+### better display table projects
+
+### better display table service tokens
 
 ### [DONE] way to have non base64 master key - could auto base64, 32 bytes (chars)

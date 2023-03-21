@@ -18,50 +18,54 @@
 {% endif %}
 
     <div class="main">
-        <div>
-            <a class="pure-button" href="/admin/projects/new">+</a>
-        </div>
-        <table class="pure-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for project in projects %}
-
+        <div class="pure-u-1-5"></div>
+        <div class="pure-u-3-5">
+            <span id="secrets-controls">
+                <a class="pure-button" href="/admin/projects/new">+</a>
+            </span>
+            <table class="pure-table" style="width: 100%">
+                <thead>
                     <tr>
-                        <td>{{ project.id }}</td>
-                        <td>
-                            {% if project.project_id %}
-                                <span>
-                                   &nbsp;&nbsp;&nbsp;&nbsp;
-                                </span>
-                            {% endif %}
-                            {{ project.name }}
-
-                            {% if not project.sealed %}
-                                <b>
-                                    <a onclick="return confirm('Are you sure?')"
-                                       title="Click to seal the project master key"
-                                       href="/admin/projects/{{ project.id }}/seal">
-                                        [unsealed]
-                                    </a>
-                                </b>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <ul>
-                                <li><a href="/admin/projects/{{ project.id }}/">View</a></li>
-                                <li><a href="/admin/projects/{{ project.id }}/service-tokens">Service Tokens</a></li>
-                            </ul>
-                        </td>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Actions</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+
+                        <tr>
+                            <td>{{ project.id }}</td>
+                            <td>
+                                {% if project.project_id %}
+                                    <span>
+                                       &nbsp;&nbsp;&nbsp;&nbsp;
+                                    </span>
+                                {% endif %}
+                                {{ project.name }}
+
+                                {% if not project.sealed %}
+                                    <b>
+                                        <a onclick="return confirm('Are you sure?')"
+                                           title="Click to seal the project master key"
+                                           href="/admin/projects/{{ project.id }}/seal">
+                                            [unsealed]
+                                        </a>
+                                    </b>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <ul>
+                                    <li><a href="/admin/projects/{{ project.id }}/">View</a></li>
+                                    <li><a href="/admin/projects/{{ project.id }}/service-tokens">Service Tokens</a></li>
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="pure-u-1-5"></div>
     </div>
 
 {% endblock %}
