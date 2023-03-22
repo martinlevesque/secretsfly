@@ -16,13 +16,15 @@
         </li>
 
         {% if g.project %}
-        <li class="pure-menu-item">
+        <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
             <a href="/admin/projects/{{ g.project.id }}/" class="pure-menu-link">
                 {{ g.project.name }}
             </a>
             <ul class="pure-menu-children">
                 <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">Environments</a>
+                    <a href="/admin/projects/{{ g.project.id }}/service-tokens/" class="pure-menu-link">
+                        Service Tokens
+                    </a>
                 </li>
             </ul>
         </li>

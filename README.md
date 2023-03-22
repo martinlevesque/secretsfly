@@ -79,3 +79,7 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 - vault is key-value
 - doppler is grouping secrets in projects
 - to test - example with github, sync secrets?
+
+## todo
+
+### issue when rotating with password-based master key

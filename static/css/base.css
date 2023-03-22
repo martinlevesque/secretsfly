@@ -2,10 +2,11 @@
   --link-color: #ffffff;
   --secretfly-color: #00dd23;
   --black: #000000;
+  --dark-grey: #3f4245
 }
 
 body {
-    background-color: #3f4245;
+    background-color: var(--dark-grey);
     color: #fff;
 }
 
@@ -37,6 +38,13 @@ a:hover {
 
 .pure-menu-item .home {
     color: var(--secretfly-color);
+}
+
+.pure-menu-item {
+    background-color: var(--dark-grey);
+    border-color: white;
+    border-style: solid;
+    border-width: 1px;
 }
 
 .pure-button:hover {
