@@ -1,3 +1,4 @@
+import base64
 from sqlalchemy import Column, Integer, String
 from models.common import *
 from lib import encryption
@@ -21,6 +22,16 @@ class Project(Base):
     def master_key_format_valid(master_key):
         return master_key and PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR not in master_key
 
+    def prepare_master_key(master_key):
+        result = master_key
+        if not encryption.is_base64(master_key) or len(master_key) < encryption.KEY_LENGTH:
+            if encryption.KEY_LENGTH - len(master_key) < encryption.KEY_LENGTH:
+                missing_padding = encryption.KEY_LENGTH - len(master_key)
+                result = base64.b64encode(
+                    bytes(master_key + (encryption.KEY_PADDING * missing_padding), 'utf-8')
+                ).decode('utf-8')
+
+        return result
 
     def master_key_valid(self, master_key, first_project_secret):
         if not first_project_secret:

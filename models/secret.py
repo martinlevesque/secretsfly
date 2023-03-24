@@ -71,7 +71,6 @@ class Secret(Base):
         return latest_history.decrypted_value(project_master_key)
 
     def decrypt_secrets(secrets, project_master_key):
-
         secret_ids = [secret.id for secret in secrets]
 
         secret_value_histories = Secret.latest_value_histories(secret_ids)

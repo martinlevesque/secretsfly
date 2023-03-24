@@ -86,7 +86,7 @@ def rotate(project_id):
     project_ids = [project_id, project.project_id]
 
     if request.method == 'POST':
-        new_master_key = request.form['new_master_key']
+        new_master_key = Project.prepare_master_key(request.form['new_master_key'])
         current_master_key = request.form['current_master_key']
         secrets = Secret.retrieve_hierarchy_secrets(project_ids)
 
@@ -166,12 +166,7 @@ def set_project_master_key(project_id):
     if not Project.master_key_format_valid(master_key):
         return {"error": "Invalid master key format"}, 400
 
-    if not encryption.is_base64(master_key) or len(master_key) < encryption.KEY_LENGTH:
-        if encryption.KEY_LENGTH - len(master_key) < encryption.KEY_LENGTH:
-            missing_padding = encryption.KEY_LENGTH - len(master_key)
-            master_key = base64.b64encode(
-                bytes(master_key + (encryption.KEY_PADDING * missing_padding), 'utf-8')
-            ).decode('utf-8')
+    master_key = Project.prepare_master_key(master_key)
 
     first_project_secret = session.query(Secret).filter_by(project_id=project_id).first()
 
