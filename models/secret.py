@@ -1,4 +1,3 @@
-
 from datetime import datetime
 from base64 import b64encode, b64decode
 from sqlalchemy import create_engine, Column, event, DateTime, Integer, String, ForeignKey, text, func, and_, Index
@@ -9,6 +8,7 @@ from models.common import *
 from models.project import Project
 from models.environment import Environment
 
+
 class Secret(Base):
     __tablename__ = 'secrets'
 
@@ -17,7 +17,7 @@ class Secret(Base):
     environment_id = Column(Integer, ForeignKey(Environment.id), nullable=False)
     name = Column(String, nullable=False)
     comment = Column(String, nullable=False)
-    secret_history_values = relationship('SecretValueHistory', back_populates='secret')
+    secret_history_values = relationship('SecretValueHistory', back_populates='secret', cascade="all, delete-orphan")
 
     loaded_project_master_key = None
 
@@ -169,4 +169,3 @@ class SecretValueHistory(Base):
 @event.listens_for(SecretValueHistory, 'before_update')
 def populate_secret_value_history_updated_at(mapper, connection, target):
     target.updated_at = datetime.utcnow()
-

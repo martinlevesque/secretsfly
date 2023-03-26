@@ -59,7 +59,7 @@ def index():
             new_master_key = project.generate_master_key()
 
     projects = session.query(Project) \
-        .order_by(text('CASE WHEN project_id IS NULL THEN id ELSE project_id END, id')) \
+        .order_by(text('CASE WHEN project_id IS NULL or project_id = \'\' THEN id ELSE project_id END, id')) \
         .all()
     mark_projects_seal_status(projects)
 
@@ -199,8 +199,41 @@ def new():
     # retrieve all projects
     # without project_id, meaning it's a root project
 
-    projects = session.query(Project)\
-        .filter(or_(Project.project_id == '', Project.project_id == None))\
+    projects = session.query(Project) \
+        .filter(or_(Project.project_id == '', Project.project_id == None)) \
         .all()
 
     return render_template('admin/projects/new.html', projects=projects)
+
+
+@bp.route('/<project_id>/destroy', methods=['GET', 'DELETE'])
+def destroy(project_id):
+    result_check = ensure_have_project_master_in_session()
+
+    if result_check:
+        return result_check
+
+    sub_projects_to_delete = session.query(Project).filter_by(project_id=project_id).all()
+    projects_to_delete = session.query(Project).filter_by(id=project_id).all()
+
+    items_to_delete = []
+
+    for project in sub_projects_to_delete + projects_to_delete:
+        items_to_delete += prepare_destroy_project(project.id)
+
+    for item in items_to_delete:
+        session.delete(item)
+
+    session.commit()
+
+    flash('Project has been removed successfully', 'success')
+
+    return redirect(url_for('admin.admin_projects.index'))
+
+
+def prepare_destroy_project(project_id):
+    secrets_to_delete = session.query(Secret).filter_by(project_id=project_id).all()
+    service_tokens_to_delete = session.query(ServiceToken).filter_by(project_id=project_id).all()
+    projects_to_delete = session.query(Project).filter_by(id=project_id).all()
+
+    return secrets_to_delete + service_tokens_to_delete + projects_to_delete

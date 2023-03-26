@@ -82,4 +82,6 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 
 ## todo
 
-### issue when rotating with password-based master key
+### option to keep history secrets
+
+### example way to backup sqlite (github)

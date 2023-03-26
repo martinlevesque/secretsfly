@@ -86,13 +86,6 @@ def given_secret(project_id, environment_id, secret_id):
 
     Secret.decrypt_secrets([secret], g.project_master_key)
 
-    secret_values = session.query(SecretValueHistory) \
-        .filter_by(secret_id=secret_id) \
-        .all()
-
-    for secret_value in secret_values:
-        session.delete(secret_value)
-
     session.delete(secret)
     session.commit()
 

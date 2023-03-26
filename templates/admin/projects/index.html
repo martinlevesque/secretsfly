@@ -57,7 +57,9 @@
                             <td>
                                 <ul>
                                     <li><a href="/admin/projects/{{ project.id }}/">View</a></li>
-                                    <li><a href="/admin/projects/{{ project.id }}/service-tokens">Service Tokens</a></li>
+                                    <li>
+                                        <a onclick="return confirm('Are you sure?')" href="/admin/projects/{{ project.id }}/destroy">Delete</a>
+                                    </li>
                                 </ul>
                             </td>
                         </tr>

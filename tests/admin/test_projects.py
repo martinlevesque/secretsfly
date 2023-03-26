@@ -154,8 +154,6 @@ def test_admin_set_invalid_project_master_key_endpoint(client):
     assert master_keys.master_key_session_set(new_project)['key'] == master_key
 
 
-
-
 def test_admin_seal_project_master_key_endpoint(client, monkeypatch):
     client.post('/admin/projects/', data={'name': 'Test Project seal'})
     new_project = session.query(Project).order_by(Project.id.desc()).first()
@@ -216,3 +214,34 @@ def test_admin_post_rotate_endpoint(client):
         .first()
 
     assert secret_loaded.decrypt_latest_value(new_master_key) == "value1"
+
+
+def test_admin_post_rotate_endpoint(client):
+    master_key = encryption.generate_key_b64()
+    project = helpers.make_project(client, "project destroy", master_key=master_key)
+    project_id = project.id
+    sub_project = helpers.make_project(client, "project sub destroy", master_key=master_key,
+                                       parent_project_id=project.id)
+    sub_project_id = sub_project.id
+    environment = helpers.first_environment()
+    helpers.make_secret(project,
+                        environment,
+                        {'name': 'test secret'},
+                        secret_value='value1',
+                        master_key=master_key)
+
+    helpers.make_secret(sub_project,
+                        environment,
+                        {'name': 'test secret'},
+                        secret_value='value1',
+                        master_key=master_key)
+
+    response = client.delete(f"/admin/projects/{project.id}/destroy")
+
+    assert response.status_code == 302
+
+    assert not session.query(Secret).filter_by(project_id=project_id).first()
+    assert not session.query(Secret).filter_by(project_id=sub_project_id).first()
+
+    assert not session.query(Project).filter_by(id=project_id).first()
+    assert not session.query(Project).filter_by(id=sub_project_id).first()
