@@ -63,7 +63,17 @@ TODO
 
 ## Backup
 
+Backuping secretsfly is as simple as copying the sqlite database file located in `db/secretsfly-[ENV].db`.
+Note that the db content is safe to backup online, as the master key is not stored in the database.
+A sample script copying into a git repository is as follows:
 
+```
+#!/bin/bash
+cp /secretsfly/db/secretsfly-production.db /secretsfly-dump/old-server.db
+cd /secretsfly-dump/
+git commit -am 'update'
+git push
+```
 
 ## Related Projects and motivation
 
@@ -83,5 +93,3 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 ## todo
 
 ### option to keep history secrets
-
-### example way to backup sqlite (github)
