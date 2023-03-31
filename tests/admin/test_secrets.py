@@ -4,7 +4,7 @@ from tests import util
 from models.environment import Environment
 from models.service_token import ServiceToken
 from models.project import Project
-from models.secret import Secret
+from models.secret import Secret, SecretValueHistory
 from models.common import PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR
 
 
@@ -130,6 +130,39 @@ def test_admin_create_secret_endpoint(client):
     secret = session.query(Secret).filter(Secret.name == "TEST_SECRET4").first()
     assert secret.decrypt_latest_value(master_key) == "sec4"
 
+
+def test_admin_create_secret_with_versioned_values_endpoint(client, monkeypatch):
+    monkeypatch.setenv("VERSIONED_SECRET_VALUES", "false")
+
+    # make a project
+    master_key = encryption.generate_key_b64()
+    project = helpers.make_project(client, "Test Project create secret", master_key)
+
+    environment = session.query(Environment).filter(Environment.id == 1).first()
+
+    secret_payload = {
+        'name': 'TEST_SECRET2'
+    }
+    secret = helpers.make_secret(
+        project,
+        environment,
+        secret_payload,
+        secret_value="hello",
+        master_key=master_key
+    )
+
+    response = client.post(f"/admin/projects/{project.id}/environments/{environment.id}/secrets/",
+                           data={
+                               f"secrets[{secret.id}][name]": "TEST_SECRET2",
+                               f"secrets[{secret.id}][value]": "world"
+                           })
+
+    assert response.status_code == 200
+
+    # get secret values
+    secret_value_histories_cnt = session.query(SecretValueHistory).filter(SecretValueHistory.secret_id == secret.id).count()
+
+    assert secret_value_histories_cnt == 1
 
 def test_admin_delete_secret_endpoint(client):
     # make a project

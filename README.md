@@ -44,6 +44,7 @@ docker-compose up -d --build
 - `ADMIN_UI_DECRYPTED_SECRETS_EXPIRATION`: Default: 5. Number of minutes before redirecting to the encrypted secrets page from the decrypted page.
 - `ADMIN_BASIC_AUTH_USERNAME`: Username for the admin UI. Basic auth is enabled if this variable is set.
 - `ADMIN_BASIC_AUTH_PASSWORD`: Password for the admin UI.
+- `VERSIONED_SECRET_VALUES`: Default: false. If set to true, secrets values are versioned. This means that when updating a secret, the old value is kept in the database.
 
 ### SSL
 
@@ -63,8 +64,9 @@ TODO
 
 ## Backup
 
-Backuping secretsfly is as simple as copying the sqlite database file located in `db/secretsfly-[ENV].db`.
-Note that the db content is safe to backup online, as the master key is not stored in the database.
+Backuping secretsfly is as simple as copying the sqlite database file located in `db/secretsfly-[ENV].db` to any storage
+solution.
+Note that the db content is safe to backup online, as the master key is never stored in the database.
 A sample script copying into a git repository is as follows:
 
 ```
@@ -92,4 +94,3 @@ https://www.doppler.com/blog/doppler-vs-hashicorp-vault
 
 ## todo
 
-### option to keep history secrets

@@ -148,6 +148,11 @@ def upsert_secrets(project_id, environment_id, secrets):
             session.add(secret)
             session.commit()
 
+        if os.environ.get('VERSIONED_SECRET_VALUES', 'false') == 'false':
+            # remote old secret value history
+            session.query(SecretValueHistory).filter_by(secret_id=secret.id).delete()
+            session.commit()
+
         latest_secret_history_value = session.query(SecretValueHistory) \
             .filter_by(secret_id=secret.id) \
             .order_by(SecretValueHistory.id.desc()) \
