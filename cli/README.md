@@ -2,6 +2,11 @@
 
 ## Installation
 
+Simply download the cli.py file ( https://raw.githubusercontent.com/martinlevesque/secretsfly/main/cli/cli.py ) where
+applicable.
+
+See the `samples` directory for examples usage.
+
 ## Environment variables
 
 - `SECRETSFLY_TOKEN`: a secretsfly service token for a given project, environment.
