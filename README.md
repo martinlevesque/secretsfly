@@ -112,4 +112,8 @@ TODO
 
 ## TODO
 
+### limit project name length
+
+### change default environments to development, staging, production
+
 ### fly deployment with recurring reset https://github.com/fly-apps/nginx-cluster/blob/d3f918b65d6c4fca32ce260dd9e11e26af867075/fly.toml#L39-L43
