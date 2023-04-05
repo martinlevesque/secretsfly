@@ -55,6 +55,7 @@ docker-compose up -d --build
 ### Environment variables
 
 - `ENV`: The secretsfly environment. Note that on the first boot, the database is initialized by copying `db/secretsfly-current.db` to `db/secretsfly-[ENV].db`.
+- `DB_FOLDER`: Default: ./db. Folder where the database is stored.
 - `AVAILABLE_ENVIRONMENTS`: Default: prod. Comma separated list of environments available globally.
 - `ADMIN_MASTER_KEY_EXPIRATION`: Default: 300 (in seconds). Master key timeout, after which the master key is deleted from memory.
 - `ADMIN_UI_DECRYPTED_SECRETS_EXPIRATION`: Default: 5. Number of minutes before redirecting to the encrypted secrets page from the decrypted page.

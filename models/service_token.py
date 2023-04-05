@@ -41,7 +41,7 @@ class ServiceToken(Base):
         parts = decoded_pub_service_token.split(PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR)
 
         if len(parts) != 2:
-            raise Exception(f"Invalid public service token: {pub_service_token}")
+            raise Exception(f"Invalid public service token")
 
         project_master_key = parts[0]
         b64_service_token = parts[1]
@@ -51,7 +51,7 @@ class ServiceToken(Base):
         service_token = session.query(ServiceToken).filter(ServiceToken.token == stored_service_token).first()
 
         if not service_token:
-            raise Exception(f"Cannot find the service token: {pub_service_token}")
+            raise Exception(f"Cannot find the service token")
 
         return {
             'project_master_key': project_master_key,

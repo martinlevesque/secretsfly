@@ -1,5 +1,0 @@
-martinlev.ddns.net
-
-reverse_proxy / {
-    to localhost:5000
-}

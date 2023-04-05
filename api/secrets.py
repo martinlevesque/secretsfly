@@ -21,23 +21,31 @@ def get_service_token(header_service_token):
 
 @bp.route('/')
 def index():
-    service_token = request.headers.get('authorization')
+    try:
+        service_token = request.headers.get('authorization')
 
-    service_token, project_master_key = get_service_token(service_token)
+        service_token, project_master_key = get_service_token(service_token)
 
-    project = session.query(Project).filter_by(id=service_token.project_id).first()
+        project = session.query(Project).filter_by(id=service_token.project_id).first()
 
-    secrets = Secret.retrieve_hierarchy_secrets(
-        [service_token.project_id, project.project_id],
-        service_token.environment_id
-    )
+        secrets = Secret.retrieve_hierarchy_secrets(
+            [service_token.project_id, project.project_id],
+            service_token.environment_id
+        )
 
-    Secret.decrypt_secrets(secrets, project_master_key)
+        Secret.decrypt_secrets(secrets, project_master_key)
 
-    json_secrets = []
+        json_secrets = []
 
-    for s in secrets:
-        s.loaded_project_master_key = project_master_key
-        json_secrets.append(s.serialize)
+        for s in secrets:
+            s.loaded_project_master_key = project_master_key
+            json_secrets.append(s.serialize)
 
-    return jsonify(secrets=json_secrets)
+        return jsonify(secrets=json_secrets)
+    except Exception as e:
+        response_data = {
+            'error': 'Bad Request',
+            'message': str(e)
+        }
+        return jsonify(response_data), 400
+
