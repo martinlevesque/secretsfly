@@ -10,7 +10,7 @@
         <form method="POST" class="pure-form pure-form-aligned" action="/admin/projects/{{ project.id }}/set-master-key">
             <fieldset>
                 <div class="pure-control-group">
-                    <label for="project-master-key">Project master key *</label>
+                    <label for="project-master-key">Project master key/passphrase*</label>
                     <input type="password"
                            name="master_key_{{ project.id }}"
                            class="pure-input-1-2"
@@ -31,7 +31,7 @@
         <hr />
     </div>
 
-    <div class="pure-g">
+    <div class="pure-g" style="margin: 20px;">
 
         {% for environment in environments %}
             <div class="pure-u-1-{{ nb_environments }}">

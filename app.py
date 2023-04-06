@@ -9,7 +9,7 @@ from db import session, prepare_db
 
 app = Flask(__name__)
 
-app.config['ENV'] = os.environ.get('ENV', 'dev')
+app.config['ENV'] = os.environ.get('ENV', 'development')
 
 # app secret key is randomized at startup
 app.secret_key = encryption.generate_key_b64()
@@ -35,7 +35,7 @@ prepare_db()
 
 app.logger.debug('Initializing global environments')
 
-AVAILABLE_ENVIRONMENTS = os.environ.get('AVAILABLE_ENVIRONMENTS', 'dev,staging,prod').split(',')
+AVAILABLE_ENVIRONMENTS = os.environ.get('AVAILABLE_ENVIRONMENTS', 'development,staging,production').split(',')
 
 if not len(AVAILABLE_ENVIRONMENTS):
     raise Exception('No environments defined in AVAILABLE_ENVIRONMENTS')

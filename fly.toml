@@ -19,7 +19,6 @@ processes = []
   internal_port = 8080
   processes = ["app"]
   protocol = "tcp"
-  script_checks = []
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
@@ -39,6 +38,12 @@ processes = []
     interval = "15s"
     restart_limit = 0
     timeout = "2s"
+
+  [[services.script_checks]]
+    interval = 999000
+    timeout = 10000
+    command = "/workspace/scripts/reset-demo.sh"
+    restart_limit = 0
 
 [mounts]
   source = "db"

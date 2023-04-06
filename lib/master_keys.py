@@ -6,7 +6,6 @@ from lib.log import logger
 from lib import encryption
 
 base_master_key = encryption.generate_key_b64()
-print(f"Base master key: {base_master_key}")
 encrypted_master_keys = {}  # project_id -> { 'key': '...', 'set_at': 1234567890 }
 
 

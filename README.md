@@ -16,7 +16,7 @@ Vault is open source and allows you to store your master keys, but it is a signi
 
 ## Demo
 
-TODO - add a demo url
+Note that a demo is available at https://secretsfly.fly.dev/ - it is periodically reset.
 
 ## Secrets mechanism
 
@@ -108,12 +108,5 @@ git push
 
 ## Benchmark
 
-TODO
+A [benchmark](benchmark) was done, giving an idea about secretsfly performance to retrieve secrets by API.
 
-## TODO
-
-### limit project name length
-
-### change default environments to development, staging, production
-
-### fly deployment with recurring reset https://github.com/fly-apps/nginx-cluster/blob/d3f918b65d6c4fca32ce260dd9e11e26af867075/fly.toml#L39-L43

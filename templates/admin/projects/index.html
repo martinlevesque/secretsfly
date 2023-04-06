@@ -6,12 +6,19 @@
 
 {% if new_master_key %}
 <div>
-    <p><strong>New master key generated for project {{ project.name }}. Make sure to back it up and keep it secret.</strong>
-        <input id="master_key_input"
-               type="password"
-               value="{{ new_master_key }}"
-               class="pure-input-1-2"
-               readonly />
+    <p>
+        <strong>
+            New master key generated for project {{ project.name }}. It is recommended to back it up and keep it secret.<br />
+            Alternatively you can use your own master key/passphrase.
+        </strong>
+        <form class="pure-form pure-form-aligned">
+            <input id="master_key_input"
+                   type="password"
+                   value="{{ new_master_key }}"
+                   class="pure-input-1-2"
+                   readonly />
+            <p></p>
+        </form>
         <button onclick="copyTagContent('master_key_input')" class="pure-button">Copy master key</button>
     </p>
 </div>
