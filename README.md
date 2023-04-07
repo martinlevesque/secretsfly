@@ -110,3 +110,6 @@ git push
 
 A [benchmark](benchmark) was done, giving an idea about secretsfly performance to retrieve secrets by API.
 
+## TODO
+
+### possible get padding invalid if wrong master key while decrypting
