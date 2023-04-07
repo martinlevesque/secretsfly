@@ -1,5 +1,6 @@
 import os
-from flask import Flask, render_template
+import traceback
+from flask import flash, Flask, render_template, redirect, request
 from api.status import bp as status_endpoints
 from api.secrets import bp as secrets_endpoints
 from admin.admin import bp as admin_endpoints
@@ -53,3 +54,12 @@ for env in AVAILABLE_ENVIRONMENTS:
 @app.teardown_request
 def remove_session(ex=None):
     session.remove()
+
+
+@app.errorhandler(Exception)
+def all_exception_handler(error):
+    flash('Error: {}'.format(error), 'error')
+    traceback.print_exc()
+
+    return redirect(request.referrer or '/')
+

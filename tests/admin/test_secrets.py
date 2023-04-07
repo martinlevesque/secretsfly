@@ -2,13 +2,10 @@ from db import session
 from tests import util
 
 from models.environment import Environment
-from models.service_token import ServiceToken
-from models.project import Project
 from models.secret import Secret, SecretValueHistory
-from models.common import PROJECT_SERVICE_TOKEN_ENCODED_SEPARATOR
 
 
-from lib import encryption
+from lib import encryption, master_keys
 from tests.admin import helpers
 
 
@@ -37,8 +34,18 @@ def test_admin_secrets_endpoint(client):
     util.assert_response_contains_html(f"{secret_payload['name']} (from environments: {environment.name})", response)
 
 
+def test_admin_secrets_endpoint_disallow_without_master_key(client):
+    # make a project
+    project = helpers.make_project(client, "Test Project secrets - disallow without master key")
+    master_keys.delete_master_key(project.id)
+
+    environment = session.query(Environment).filter(Environment.id == 1).first()
+
+    response = client.get(f"/admin/projects/{project.id}/environments/{environment.id}/secrets/")
+
+    assert response.status_code == 302
+
 def test_admin_secrets_with_parent_secrets_endpoint(client):
-    #helpers.clear_all_projects()
     master_key = encryption.generate_key_b64()
     # make a project
     project = helpers.make_project(client, "Test Project secrets test_admin_secrets_with_parent_secrets_endpoint",
@@ -168,6 +175,7 @@ def test_admin_create_secret_with_versioned_values_endpoint(client, monkeypatch)
     secret_value_histories_cnt = session.query(SecretValueHistory).filter(SecretValueHistory.secret_id == secret.id).count()
 
     assert secret_value_histories_cnt == 1
+
 
 def test_admin_delete_secret_endpoint(client):
     # make a project

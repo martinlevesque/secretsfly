@@ -13,6 +13,10 @@ bp = Blueprint('admin_secrets', __name__, url_prefix='/')
 
 
 @bp.before_request
+def before_request_check_format():
+    g.format = 'json' if request.args.get('format') == 'json' else 'html'
+
+@bp.before_request
 def before_request_ensure_have_project_master_in_session():
     g.with_decryption = request.args.get('decrypt') == 'true'
     g.requires_master_key = g.with_decryption
@@ -20,12 +24,12 @@ def before_request_ensure_have_project_master_in_session():
     if request.method in ['POST', 'DELETE'] or g.with_decryption:
         g.requires_master_key = True
 
-        return ensure_have_project_master_in_session()
-
 
 @bp.before_request
-def before_request_check_format():
-    g.format = 'json' if request.args.get('format') == 'json' else 'html'
+def before_request_ensure_have_project_master_in_session():
+    print('in before_request_ensure_have_project_master_in_session..')
+    print(f"g project = {g.project}")
+    return ensure_have_project_master_in_session()
 
 
 ### Endpoints

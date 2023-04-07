@@ -34,6 +34,7 @@ Note that a demo is available at https://secretsfly.fly.dev/ - it is periodicall
 - Ability to rotate the master key, and re-encrypt all secrets with a new master key.
 - Service tokens allow to decrypt secrets and are passed in memory in the child process (typically a server requiring environment variables).
 - Secrets in a given environment can be copied to other environments whenever missing.
+- No authentication is required. Projects and secrets are protected by a master key which don't require to formally authenticate.
 
 ## Server Installation
 
@@ -112,4 +113,4 @@ A [benchmark](benchmark) was done, giving an idea about secretsfly performance t
 
 ## TODO
 
-### possible get padding invalid if wrong master key while decrypting
+### when entering master key, add session list authenticated projects
