@@ -12,10 +12,10 @@ from tests.admin import helpers
 def test_api_secrets_endpoint(client):
     # make a project
     master_key = encryption.generate_key_b64()
-    project = helpers.make_project(client, "Test Project api secrets", master_key=master_key)
+    project = helpers.make_project(client, "Test Project api secrets test_api_secrets_endpoint", master_key=master_key)
     sub_project = helpers.make_project(
         client,
-        "Test Project sub",
+        "Test Project sub test_api_secrets_endpoint",
         master_key=master_key,
         parent_project_id=project.id
     )

@@ -56,3 +56,8 @@ def first_environment(id=None):
         id = 1
 
     return session.query(Environment).filter_by(id=id).first()
+
+
+def clear_all_projects():
+    session.query(Project).delete()
+    session.commit()

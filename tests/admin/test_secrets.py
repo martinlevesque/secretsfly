@@ -38,9 +38,11 @@ def test_admin_secrets_endpoint(client):
 
 
 def test_admin_secrets_with_parent_secrets_endpoint(client):
+    #helpers.clear_all_projects()
     master_key = encryption.generate_key_b64()
     # make a project
-    project = helpers.make_project(client, "Test Project secrets", master_key=master_key)
+    project = helpers.make_project(client, "Test Project secrets test_admin_secrets_with_parent_secrets_endpoint",
+                                   master_key=master_key)
     sub_project = helpers.make_project(
         client,
         "Test Project sub",
@@ -70,7 +72,8 @@ def test_admin_secrets_with_parent_secrets_endpoint(client):
 def test_admin_secrets_endpoint_with_decryption(client):
     # make a project
     master_key = encryption.generate_key_b64()
-    project = helpers.make_project(client, "Test Project secrets", master_key)
+    project = helpers.make_project(client, "Test Project secrets test_admin_secrets_endpoint_with_decryption",
+                                   master_key)
 
     environment = session.query(Environment).filter(Environment.id == 1).first()
 
@@ -136,7 +139,9 @@ def test_admin_create_secret_with_versioned_values_endpoint(client, monkeypatch)
 
     # make a project
     master_key = encryption.generate_key_b64()
-    project = helpers.make_project(client, "Test Project create secret", master_key)
+    project = helpers.make_project(client, "Test Project create secret "
+                                           "test_admin_create_secret_with_versioned_values_endpoint",
+                                   master_key)
 
     environment = session.query(Environment).filter(Environment.id == 1).first()
 

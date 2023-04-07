@@ -1,5 +1,5 @@
-alembic==1.10.2
+alembic==1.10.3
 Flask==2.2.3
 gunicorn==20.1.0
 pycryptodome==3.17
-SQLAlchemy==2.0.8
+SQLAlchemy==2.0.9

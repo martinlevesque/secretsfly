@@ -11,7 +11,7 @@ class Project(Base):
 
     id = Column(Integer, primary_key=True)
     project_id = Column(Integer, index=True, nullable=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     description = Column(String)
 
     def is_root_project(self):

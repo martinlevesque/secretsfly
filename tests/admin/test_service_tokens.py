@@ -66,7 +66,7 @@ def test_admin_service_tokens_destroy_endpoint(client):
 
 
 def test_admin_service_tokens_new_endpoint(client):
-    project = make_project(client, "Test Project 5", "my-master-key")
+    project = make_project(client, "Test Project 5 test_admin_service_tokens_new_endpoint", "my-master-key")
     response = client.get(f"/admin/projects/{project.id}/service-tokens/new")
 
     assert response.status_code == 200
