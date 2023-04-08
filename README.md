@@ -35,6 +35,7 @@ Note that a demo is available at https://secretsfly.fly.dev/ - it is periodicall
 - Service tokens allow to decrypt secrets and are passed in memory in the child process (typically a server requiring environment variables).
 - Secrets in a given environment can be copied to other environments whenever missing.
 - No authentication is required. Projects and secrets are protected by a master key which don't require to formally authenticate.
+- A given user providing the master key get access to the project. A another given user visiting the site does will not be able to access this same project, unless it provide the same master key. Therefore, multiple users can access various projects securely.
 
 ## Server Installation
 
@@ -110,7 +111,3 @@ git push
 ## Benchmark
 
 A [benchmark](benchmark) was done, giving an idea about secretsfly performance to retrieve secrets by API.
-
-## TODO
-
-### when entering master key, add session list authenticated projects

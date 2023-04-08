@@ -161,6 +161,7 @@ def get_project(project_id):
 def set_project_master_key(project_id):
     project = session.query(Project).filter_by(id=project_id).first()
 
+
     master_key = request.form.get(f"master_key_{project.id}")
 
     if not Project.master_key_format_valid(master_key):

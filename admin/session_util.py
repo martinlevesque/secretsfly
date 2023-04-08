@@ -13,7 +13,6 @@ def master_key_session_set(project):
 
         return {'key': decoded['project_master_key']}
 
-    print(f"master_keys.master_key_session_set(project) = {master_keys.master_key_session_set(project)}")
     return master_keys.master_key_session_set(project)
 
 

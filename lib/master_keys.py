@@ -4,6 +4,7 @@ import os
 from threading import Thread
 from lib.log import logger
 from lib import encryption
+from lib import flask_session
 
 base_master_key = encryption.generate_key_b64()
 encrypted_master_keys = {}  # project_id -> { 'key': '...', 'set_at': 1234567890 }
@@ -18,6 +19,9 @@ def cron_check_master_keys_expiration():
 def master_key_session_set(project):
     global encrypted_master_keys
     global base_master_key
+
+    if project.id not in flask_session.get_projects_access():
+        return None
 
     encrypted_master_key_info = copy.deepcopy(encrypted_master_keys.get(str(project.id)))
 
@@ -44,6 +48,7 @@ def delete_master_key(project_id):
     global encrypted_master_keys
 
     del encrypted_master_keys[str(project_id)]
+    flask_session.remove_project_access(project_id)
 
 
 def set_master_key(project_id, master_key):
@@ -55,6 +60,8 @@ def set_master_key(project_id, master_key):
         'key': encrypted_master_key,
         'set_at': int(time.time())
     }
+
+    flask_session.add_project_access(project_id)
 
     return encrypted_master_key
 
