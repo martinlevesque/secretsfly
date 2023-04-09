@@ -5,6 +5,7 @@
 
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/pure-min.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
 </head>
 <body>
@@ -45,7 +46,5 @@
 	{% block body %}
 
 	{% endblock %}
-
-	<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 </body>
 </html>

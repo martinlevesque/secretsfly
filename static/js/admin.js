@@ -15,6 +15,13 @@ function copyTagContent(tagId) {
   copyText.selectionStart = copyText.selectionEnd;
 }
 
+function countLinesIn(str) {
+  if (!str) {
+    return 0;
+  }
+
+  return str.split(/\r*\n/).length;
+}
 const flashes = document.querySelector('.flashes');
 
 // If the flashes element exists
