@@ -39,7 +39,11 @@
                     <h3>{{ environment.name }}</h3>
 
                     <ul>
-                        <li><a href="/admin/projects/{{ project.id }}/environments/{{ environment.id }}/secrets">Secrets</a></li>
+                        <li>
+                            <a href="/admin/projects/{{ project.id }}/environments/{{ environment.id }}/secrets">
+                                Secrets ({{ nb_secrets_per_env.get(environment.id, 0) }})
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>

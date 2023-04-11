@@ -1,8 +1,6 @@
-import time
-import os
+import pytest
 import base64
 from freezegun import freeze_time
-from datetime import datetime
 from tests import util
 from models.environment import Environment
 from models.project import Project
@@ -11,6 +9,14 @@ from db import session
 from tests.admin import helpers
 from lib import master_keys
 from lib import encryption
+
+
+# before each test
+@pytest.fixture(autouse=True)
+def setup():
+    # delete all projects
+    session.query(Project).delete()
+    session.query(Secret).delete()
 
 
 def test_admin_projects_endpoint(client):
@@ -57,10 +63,28 @@ def test_admin_projects_endpoint_with_many(client):
     assert response.data.count(b'[unsealed]') == 1
 
 
-def test_admin_create_project_endpoint(client):
-    # delete all projects
-    session.query(Project).delete()
+def test_admin_project_endpoint(client):
+    master_key = encryption.generate_key_b64()
+    project = helpers.make_project(client, "project endpoint retrieve", master_key=master_key)
 
+    response = client.get(f"/admin/projects/{project.id}/")
+
+    assert response.status_code == 200
+
+    util.assert_response_contains_html('Secrets (0)', response, occurrences=3)
+
+    helpers.make_secret(project,
+                        helpers.first_environment(),
+                        {'name': 'test secret'},
+                        secret_value='valueret',
+                        master_key=master_key)
+
+    response = client.get(f"/admin/projects/{project.id}/")
+
+    util.assert_response_contains_html('Secrets (1)', response)
+
+
+def test_admin_create_project_endpoint(client):
     response = client.post('/admin/projects/', data={'name': 'Test Project 2'})
 
     project = session.query(Project).order_by(Project.id.desc()).first()
@@ -100,7 +124,10 @@ def test_admin_set_project_master_key_endpoint(client, monkeypatch):
 
 
 def test_admin_set_project_master_key_with_human_password_endpoint(client):
-    client.post('/admin/projects/', data={'name': 'Test Project human pw'})
+    response = client.post('/admin/projects/', data={'name': 'Test Project human pw'})
+
+    assert response.status_code == 200
+
     new_project = session.query(Project).order_by(Project.id.desc()).first()
 
     master_key = "HelloWorld"
@@ -216,7 +243,7 @@ def test_admin_post_rotate_endpoint(client):
     assert secret_loaded.decrypt_latest_value(new_master_key) == "value1"
 
 
-def test_admin_post_rotate_endpoint(client):
+def test_admin_delete_project(client):
     master_key = encryption.generate_key_b64()
     project = helpers.make_project(client, "project destroy", master_key=master_key)
     project_id = project.id

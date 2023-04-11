@@ -1,7 +1,7 @@
 import time
 import base64
 from flask import Blueprint, render_template, request, redirect, url_for, g, flash
-from sqlalchemy import text, or_
+from sqlalchemy import text, or_, func
 from admin.session_util import master_key_session_set, ensure_have_project_master_in_session
 from db import session
 
@@ -150,17 +150,23 @@ def get_project(project_id):
     # retrieve all environments - environments could be specific to a project
     environments = session.query(Environment).all()
 
+    # nb secrets per environment:
+    raw_nb_secrets_per_env = session.query(Secret.environment_id, func.count())\
+        .group_by(Secret.environment_id)\
+        .filter(Secret.project_id.in_([project.id, project.project_id])).all()
+    nb_secrets_per_env = {env_id: count for env_id, count in raw_nb_secrets_per_env}
+
     return render_template('admin/projects/project.html',
                            project=project,
                            environments=environments,
                            nb_environments=len(environments),
+                           nb_secrets_per_env=nb_secrets_per_env,
                            project_master_key_is_set=master_key_session_set(project))
 
 
 @bp.route('/<project_id>/set-master-key', methods=['POST'])
 def set_project_master_key(project_id):
     project = session.query(Project).filter_by(id=project_id).first()
-
 
     master_key = request.form.get(f"master_key_{project.id}")
 
